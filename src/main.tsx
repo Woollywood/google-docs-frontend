@@ -1,11 +1,18 @@
 import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { App } from './App.tsx';
+import ReactDOM from 'react-dom/client';
+import { Router } from './Router';
+import { QueryClientProvider } from '@/providers/queryClientProvider';
 
 import './assets/tailwind.css';
 
-createRoot(document.getElementById('root')!).render(
-	<StrictMode>
-		<App />
-	</StrictMode>,
-);
+const rootElement = document.getElementById('root')!;
+if (!rootElement.innerHTML) {
+	const root = ReactDOM.createRoot(rootElement);
+	root.render(
+		<StrictMode>
+			<QueryClientProvider>
+				<Router />
+			</QueryClientProvider>
+		</StrictMode>,
+	);
+}
