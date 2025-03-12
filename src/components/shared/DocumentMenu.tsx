@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '../ui/button';
-import { ExternalLinkIcon, MoreVertical } from 'lucide-react';
+import { DeleteIcon, ExternalLinkIcon, MoreVertical } from 'lucide-react';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -8,13 +8,14 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Link } from '@tanstack/react-router';
+import { useDeleteDocument } from '@/queries/documents';
+import { Document } from '@/api/generatedApi';
 
-interface Props {
-	id: number;
-	title: string;
-}
+type Props = Pick<Document, 'id' | 'title'>;
 
 export const DocumentMenu: React.FC<Props> = ({ id }) => {
+	const { mutateAsync } = useDeleteDocument();
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -28,6 +29,10 @@ export const DocumentMenu: React.FC<Props> = ({ id }) => {
 						<ExternalLinkIcon className='mr-2 size-4' />
 						Open in a new tab
 					</Link>
+				</DropdownMenuItem>
+				<DropdownMenuItem onClick={() => mutateAsync(id)}>
+					<DeleteIcon className='mr-2 size-4' />
+					Delete
 				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>

@@ -22,3 +22,14 @@ export const useCreateDocument = () => {
 		},
 	});
 };
+
+export const useDeleteDocument = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (id: string) => DocumentsService.deleteDocument(id),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.DOCUMENTS] });
+		},
+	});
+};

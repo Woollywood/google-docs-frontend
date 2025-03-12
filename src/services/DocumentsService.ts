@@ -15,6 +15,10 @@ class _DocumentsService {
 		const { data } = await $api.documents.documentsControllerCreateDocument(dto);
 		return data;
 	}
+
+	deleteDocument(id: string) {
+		return $api.documents.documentsControllerDelete(id);
+	}
 }
 
 export const DocumentsService = new _DocumentsService();

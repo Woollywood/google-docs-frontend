@@ -10,7 +10,7 @@
  */
 
 export interface Document {
-	id: number;
+	id: string;
 	/** @format date-time */
 	createdAt: string;
 	/** @format date-time */
@@ -25,7 +25,7 @@ export interface Document {
 }
 
 export interface User {
-	id: number;
+	id: string;
 	/** @format date-time */
 	createdAt: string;
 	/** @format date-time */
@@ -49,7 +49,7 @@ export interface User {
 }
 
 export interface Session {
-	id: number;
+	id: string;
 	/** @format date-time */
 	createdAt: string;
 	/** @format date-time */
@@ -441,6 +441,20 @@ export class Api<SecurityDataType extends unknown> {
 				body: data,
 				type: ContentType.Json,
 				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Documents
+		 * @name DocumentsControllerDelete
+		 * @request DELETE:/documents/{id}
+		 */
+		documentsControllerDelete: (id: string, params: RequestParams = {}) =>
+			this.http.request<void, any>({
+				path: `/documents/${id}`,
+				method: 'DELETE',
 				...params,
 			}),
 	};

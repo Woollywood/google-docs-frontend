@@ -9,15 +9,14 @@ import { DocumentMenu } from './DocumentMenu';
 import moment from 'moment';
 
 export const DocumentsTable: React.FC = () => {
-	const { data, isPending, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useGetDocuments();
-	const isLoading = isPending || (isFetching && !isFetchingNextPage);
+	const { data, isPending, fetchNextPage, hasNextPage } = useGetDocuments();
 	const hasDocuments = data?.pages && data.pages.length > 0 && data.pages[0].data.length > 0;
 	const pages = data?.pages;
 
 	return (
 		<div className='mx-auto flex w-full flex-col gap-5 py-6'>
 			<InfiniteList
-				isLoading={isLoading}
+				isLoading={isPending}
 				fallback={<ListSpinner className='py-4' />}
 				nextPageFallback={<ListSpinner className='py-8' />}
 				hasNextPage={hasNextPage}
