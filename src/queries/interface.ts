@@ -1,3 +1,7 @@
 export interface LazyQuery {
-	enabled: boolean;
+	enabled?: boolean;
+}
+
+export interface SearchQuery {
+	search?: string;
 }

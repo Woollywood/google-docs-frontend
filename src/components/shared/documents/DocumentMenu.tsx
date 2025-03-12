@@ -1,6 +1,5 @@
 import React from 'react';
-import { Button } from '../ui/button';
-import { DeleteIcon, ExternalLinkIcon, MoreVertical } from 'lucide-react';
+import { ExternalLinkIcon, MoreVertical } from 'lucide-react';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -8,14 +7,14 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Link } from '@tanstack/react-router';
-import { useDeleteDocument } from '@/queries/documents';
 import { Document } from '@/api/generatedApi';
+import { Button } from '@/components/ui/button';
+import { DocumentRenameDialog } from './DocumentRenameDialog';
+import { DocumentDeleteDialog } from './DocumentRemoveDialog';
 
-type Props = Pick<Document, 'id' | 'title'>;
+type Props = Document;
 
-export const DocumentMenu: React.FC<Props> = ({ id }) => {
-	const { mutateAsync } = useDeleteDocument();
-
+export const DocumentMenu: React.FC<Props> = ({ id, title }) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -24,16 +23,14 @@ export const DocumentMenu: React.FC<Props> = ({ id }) => {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				<DropdownMenuItem asChild>
+				<DropdownMenuItem asChild onClick={(e) => e.stopPropagation()}>
 					<Link to='/documents/$id' params={{ id: String(id) }} target='_blank' rel='noopener noreferrer'>
 						<ExternalLinkIcon className='mr-2 size-4' />
 						Open in a new tab
 					</Link>
 				</DropdownMenuItem>
-				<DropdownMenuItem onClick={() => mutateAsync(id)}>
-					<DeleteIcon className='mr-2 size-4' />
-					Delete
-				</DropdownMenuItem>
+				<DocumentDeleteDialog id={id} />
+				<DocumentRenameDialog id={id} title={title} />
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);

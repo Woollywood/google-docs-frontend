@@ -78,12 +78,12 @@ export const Menu: React.FC = () => {
 	return (
 		<Menubar className='h-auto border-none bg-transparent p-0 shadow-none'>
 			<MenubarMenu>
-				<MenubarTrigger className='h-auto cursor-pointer rounded-sm px-2 py-0.5 text-sm font-normal hover:bg-muted'>
+				<MenubarTrigger className='hover:bg-muted h-auto cursor-pointer rounded-sm px-2 py-0.5 text-sm font-normal'>
 					File
 				</MenubarTrigger>
 				<MenubarContent>
 					<MenubarSub>
-						<MenubarSubTrigger>
+						<MenubarSubTrigger className='gap-2'>
 							<FileIcon className='mr-2 size-4' />
 							Save
 						</MenubarSubTrigger>
@@ -127,7 +127,7 @@ export const Menu: React.FC = () => {
 				</MenubarContent>
 			</MenubarMenu>
 			<MenubarMenu>
-				<MenubarTrigger className='h-auto cursor-pointer rounded-sm px-2 py-0.5 text-sm font-normal hover:bg-muted'>
+				<MenubarTrigger className='hover:bg-muted h-auto cursor-pointer rounded-sm px-2 py-0.5 text-sm font-normal'>
 					Edit
 				</MenubarTrigger>
 				<MenubarContent>
@@ -142,7 +142,7 @@ export const Menu: React.FC = () => {
 				</MenubarContent>
 			</MenubarMenu>
 			<MenubarMenu>
-				<MenubarTrigger className='h-auto cursor-pointer rounded-sm px-2 py-0.5 text-sm font-normal hover:bg-muted'>
+				<MenubarTrigger className='hover:bg-muted h-auto cursor-pointer rounded-sm px-2 py-0.5 text-sm font-normal'>
 					Insert
 				</MenubarTrigger>
 				<MenubarContent>
@@ -158,7 +158,7 @@ export const Menu: React.FC = () => {
 				</MenubarContent>
 			</MenubarMenu>
 			<MenubarMenu>
-				<MenubarTrigger className='h-auto cursor-pointer rounded-sm px-2 py-0.5 text-sm font-normal hover:bg-muted'>
+				<MenubarTrigger className='hover:bg-muted h-auto cursor-pointer rounded-sm px-2 py-0.5 text-sm font-normal'>
 					Format
 				</MenubarTrigger>
 				<MenubarContent>

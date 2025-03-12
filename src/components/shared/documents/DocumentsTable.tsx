@@ -1,17 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { InfiniteList } from '@/components/shared/InfiniteList';
 import { useGetDocuments } from '@/queries/documents';
-import { ListSpinner } from './spinners/ListSpinner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { SiGoogledocs } from 'react-icons/si';
 import { CircleUserIcon } from 'lucide-react';
+import { ListSpinner } from '@/components/shared/spinners/ListSpinner';
 import { DocumentMenu } from './DocumentMenu';
+import { useNavigate } from '@tanstack/react-router';
+import { useSearchParam } from '@/hooks/useSearchParam';
 import moment from 'moment';
 
 export const DocumentsTable: React.FC = () => {
-	const { data, isPending, fetchNextPage, hasNextPage } = useGetDocuments();
+	const [search] = useSearchParam('search');
+	const { data, isPending, fetchNextPage, hasNextPage, refetch } = useGetDocuments({ search });
 	const hasDocuments = data?.pages && data.pages.length > 0 && data.pages[0].data.length > 0;
 	const pages = data?.pages;
+
+	useEffect(() => {
+		refetch();
+	}, [refetch, search]);
+
+	const navigate = useNavigate();
+	const onClick = (id: string) => {
+		navigate({ to: '/documents/$id', params: { id } });
+	};
 
 	return (
 		<div className='mx-auto flex w-full flex-col gap-5 py-6'>
@@ -34,21 +46,24 @@ export const DocumentsTable: React.FC = () => {
 					<TableBody>
 						{hasDocuments ? (
 							pages?.map(({ data }) =>
-								data.map(({ id, title, createdAt }) => (
-									<TableRow key={id} className='cursor-pointer'>
+								data.map((document) => (
+									<TableRow
+										key={document.id}
+										className='cursor-pointer'
+										onClick={() => onClick(document.id)}>
 										<TableCell className='w-12'>
 											<SiGoogledocs className='size-6 fill-blue-500' />
 										</TableCell>
-										<TableCell className='font-medium md:w-[45%]'>{title}</TableCell>
+										<TableCell className='font-medium md:w-[45%]'>{document.title}</TableCell>
 										<TableCell className='text-muted-foreground hidden items-center gap-2 md:flex'>
 											{/* TODO organization */}
 											<CircleUserIcon className='size-4' /> Personal
 										</TableCell>
 										<TableCell className='text-muted-foreground hidden md:table-cell'>
-											{moment(createdAt).format('LL')}
+											{moment(document.createdAt).format('LL')}
 										</TableCell>
 										<TableCell className='flex justify-end'>
-											<DocumentMenu id={id} title={title} />
+											<DocumentMenu {...document} />
 										</TableCell>
 									</TableRow>
 								)),

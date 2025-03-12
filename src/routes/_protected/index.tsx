@@ -1,6 +1,6 @@
-import { DocumentsTable } from '@/components/shared/DocumentsTable';
+import { DocumentsTable } from '@/components/shared/documents/DocumentsTable';
+import { TemplatesGallery } from '@/components/shared/documents/TemplatesGallery';
 import { Navbar } from '@/components/shared/navbars/root';
-import { TemplatesGallery } from '@/components/shared/TemplatesGallery';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_protected/')({

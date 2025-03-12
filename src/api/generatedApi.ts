@@ -115,6 +115,15 @@ export interface CreateDocumentDto {
 	content?: string | null;
 }
 
+export interface UpdateDocumentDto {
+	/**
+	 * @minLength 3
+	 * @example "blank"
+	 */
+	title?: string;
+	content?: string | null;
+}
+
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from 'axios';
 import axios from 'axios';
 
@@ -398,11 +407,11 @@ export class Api<SecurityDataType extends unknown> {
 		 * No description
 		 *
 		 * @tags Documents
-		 * @name DocumentsControllerGetMyDocument
+		 * @name DocumentsControllerGetMyDocuments
 		 * @request GET:/documents/my
 		 */
-		documentsControllerGetMyDocument: (
-			query?: {
+		documentsControllerGetMyDocuments: (
+			query: {
 				/** @default "ASC" */
 				order?: 'ASC' | 'DESC';
 				/**
@@ -416,6 +425,7 @@ export class Api<SecurityDataType extends unknown> {
 				 * @default 10
 				 */
 				take?: number;
+				search: string;
 			},
 			params: RequestParams = {},
 		) =>
@@ -448,6 +458,21 @@ export class Api<SecurityDataType extends unknown> {
 		 * No description
 		 *
 		 * @tags Documents
+		 * @name DocumentsControllerGetDocument
+		 * @request GET:/documents/{id}
+		 */
+		documentsControllerGetDocument: (id: string, params: RequestParams = {}) =>
+			this.http.request<Document, any>({
+				path: `/documents/${id}`,
+				method: 'GET',
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Documents
 		 * @name DocumentsControllerDelete
 		 * @request DELETE:/documents/{id}
 		 */
@@ -455,6 +480,22 @@ export class Api<SecurityDataType extends unknown> {
 			this.http.request<void, any>({
 				path: `/documents/${id}`,
 				method: 'DELETE',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Documents
+		 * @name DocumentsControllerPath
+		 * @request PATCH:/documents/{id}
+		 */
+		documentsControllerPath: (id: string, data: UpdateDocumentDto, params: RequestParams = {}) =>
+			this.http.request<void, any>({
+				path: `/documents/${id}`,
+				method: 'PATCH',
+				body: data,
+				type: ContentType.Json,
 				...params,
 			}),
 	};

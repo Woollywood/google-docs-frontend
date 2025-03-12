@@ -4,11 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { signUpSchema, SignUpSchema } from '@/schemas/signUp';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useSignUp } from '@/queries/auth';
 import { useHandleError } from '@/hooks/useHandleError';
+import { signUpSchema, SignUpSchema } from '@/schemas/auth';
 
 export const Route = createFileRoute('/_unauthenticated/auth/_layout/sign-up')({
 	component: RouteComponent,

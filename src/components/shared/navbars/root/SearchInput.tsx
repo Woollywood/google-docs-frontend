@@ -33,14 +33,14 @@ export const SearchInput: React.FC = () => {
 					onChange={(e) => setValue(e.target.value)}
 					ref={inputRef}
 				/>
-				<Button variant='ghost' className='absolute left-2 top-1/2 -translate-y-1/2 rounded-full'>
+				<Button variant='ghost' className='absolute top-1/2 left-2 -translate-y-1/2 rounded-full'>
 					<SearchIcon className='size-5' />
 				</Button>
 				{value && (
 					<Button
 						type='button'
 						variant='ghost'
-						className='absolute right-2 top-1/2 -translate-y-1/2 rounded-full'
+						className='absolute top-1/2 right-2 -translate-y-1/2 rounded-full'
 						onClick={handleClear}>
 						<XIcon className='size-5' />
 					</Button>

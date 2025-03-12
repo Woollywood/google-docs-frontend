@@ -3,12 +3,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { forgotPasswordSchema, ForgotPasswordSchema } from '@/schemas/forgotPassword';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { $api } from '@/api';
 import { useHandleError } from '@/hooks/useHandleError';
+import { forgotPasswordSchema, ForgotPasswordSchema } from '@/schemas/auth';
 
 export const Route = createFileRoute('/_unauthenticated/auth/_layout/forgot-password')({
 	component: RouteComponent,

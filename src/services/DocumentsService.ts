@@ -1,13 +1,19 @@
 import { $api } from '@/api';
-import { CreateDocumentDto } from '@/api/generatedApi';
+import { CreateDocumentDto, UpdateDocumentDto } from '@/api/generatedApi';
 
 class _DocumentsService {
 	async getDocuments({
 		page = 1,
 		take = 10,
 		order = 'ASC',
-	}: { page?: number; take?: number; order?: 'ASC' | 'DESC' } = {}) {
-		const { data } = await $api.documents.documentsControllerGetMyDocument({ page, take, order });
+		search = '',
+	}: { page?: number; take?: number; order?: 'ASC' | 'DESC'; search?: string } = {}) {
+		const { data } = await $api.documents.documentsControllerGetMyDocuments({ page, take, order, search });
+		return data;
+	}
+
+	async getDocumentById(id: string) {
+		const { data } = await $api.documents.documentsControllerGetDocument(id);
 		return data;
 	}
 
@@ -18,6 +24,10 @@ class _DocumentsService {
 
 	deleteDocument(id: string) {
 		return $api.documents.documentsControllerDelete(id);
+	}
+
+	updateDocument(id: string, dto: UpdateDocumentDto) {
+		return $api.documents.documentsControllerPath(id, dto);
 	}
 }
 

@@ -4,11 +4,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { signInSchema, SignInSchema } from '@/schemas/signIn';
 import { useSearchParam } from '@/hooks/useSearchParam';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useSignIn } from '@/queries/auth';
 import { useHandleError } from '@/hooks/useHandleError';
+import { signInSchema, SignInSchema } from '@/schemas/auth';
 
 export const Route = createFileRoute('/_unauthenticated/auth/_layout/sign-in')({
 	component: RouteComponent,
