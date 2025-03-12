@@ -9,12 +9,27 @@
  * ---------------------------------------------------------------
  */
 
-export interface Session {
-	accessToken: string;
-	refreshToken: string;
+export interface Document {
+	id: number;
+	/** @format date-time */
+	createdAt: string;
+	/** @format date-time */
+	updatedAt: string;
+	/**
+	 * @minLength 3
+	 * @example "blank"
+	 */
+	title: string;
+	content: string | null;
+	user: User;
 }
 
 export interface User {
+	id: number;
+	/** @format date-time */
+	createdAt: string;
+	/** @format date-time */
+	updatedAt: string;
 	/**
 	 * @minLength 3
 	 * @example "john"
@@ -30,6 +45,18 @@ export interface User {
 	 */
 	password: string;
 	sessions: Session[];
+	documents: Document[];
+}
+
+export interface Session {
+	id: number;
+	/** @format date-time */
+	createdAt: string;
+	/** @format date-time */
+	updatedAt: string;
+	accessToken: string;
+	refreshToken: string;
+	user: User;
 }
 
 export interface CreateUserDto {
@@ -63,6 +90,29 @@ export interface TokenDto {
 export interface ResetPasswordLinkDto {
 	email: string;
 	newPassword: string;
+}
+
+export interface PageMetaDto {
+	page: number;
+	take: number;
+	itemCount: number;
+	pageCount: number;
+	hasPreviousPage: boolean;
+	hasNextPage: boolean;
+}
+
+export interface PaginatedModel {
+	data: Document[];
+	meta: PageMetaDto;
+}
+
+export interface CreateDocumentDto {
+	/**
+	 * @minLength 3
+	 * @example "blank"
+	 */
+	title: string;
+	content?: string | null;
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from 'axios';
@@ -340,6 +390,57 @@ export class Api<SecurityDataType extends unknown> {
 				method: 'POST',
 				body: data,
 				type: ContentType.Json,
+				...params,
+			}),
+	};
+	documents = {
+		/**
+		 * No description
+		 *
+		 * @tags Documents
+		 * @name DocumentsControllerGetMyDocument
+		 * @request GET:/documents/my
+		 */
+		documentsControllerGetMyDocument: (
+			query?: {
+				/** @default "ASC" */
+				order?: 'ASC' | 'DESC';
+				/**
+				 * @min 1
+				 * @default 1
+				 */
+				page?: number;
+				/**
+				 * @min 1
+				 * @max 50
+				 * @default 10
+				 */
+				take?: number;
+			},
+			params: RequestParams = {},
+		) =>
+			this.http.request<PaginatedModel, any>({
+				path: `/documents/my`,
+				method: 'GET',
+				query: query,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Documents
+		 * @name DocumentsControllerCreateDocument
+		 * @request POST:/documents
+		 */
+		documentsControllerCreateDocument: (data: CreateDocumentDto, params: RequestParams = {}) =>
+			this.http.request<Document, any>({
+				path: `/documents`,
+				method: 'POST',
+				body: data,
+				type: ContentType.Json,
+				format: 'json',
 				...params,
 			}),
 	};

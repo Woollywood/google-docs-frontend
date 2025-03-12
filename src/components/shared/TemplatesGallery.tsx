@@ -1,9 +1,10 @@
-import React, { useTransition } from 'react';
+import React from 'react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
-import { DocumentSchema } from '@/schemas/documents';
 import { useNavigate } from '@tanstack/react-router';
-import { useGetMe } from '@/queries/user';
+import { useCreateDocument } from '@/queries/documents';
+import { CreateDocumentDto } from '@/api/generatedApi';
+import { useHandleError } from '@/hooks/useHandleError';
 
 interface Template {
 	id: string;
@@ -23,21 +24,21 @@ const templates: Template[] = [
 
 export const TemplatesGallery: React.FC = () => {
 	const navigate = useNavigate();
-	// const { mutateAsync } = useCreateDocument();
-	const { data: user } = useGetMe({ enabled: false });
-
-	// const [isCreating, startTransition] = useTransition();
-	// const handleClick = (data: DocumentSchema) => {
-	// 	startTransition(async () => {
-	// 		const { data: responseData } = await mutateAsync(data);
-	// 		navigate({ to: `/documents/${responseData.id}` });
-	// 	});
-	// };
+	const { handleError } = useHandleError();
+	const { isPending, mutateAsync } = useCreateDocument();
+	const onClick = async ({ title }: CreateDocumentDto) => {
+		try {
+			const { id } = await mutateAsync({ title });
+			navigate({ to: '/documents/$id', params: { id: String(id) } });
+		} catch (error) {
+			handleError(error);
+		}
+	};
 
 	return (
 		<div className='flex flex-col gap-y-4'>
 			<h3 className='font-medium'>Start a new document</h3>
-			{/* <Carousel>
+			<Carousel>
 				<CarouselContent className='-ml-4'>
 					{templates.map(({ id, label, imageUrl }) => (
 						<CarouselItem
@@ -45,14 +46,11 @@ export const TemplatesGallery: React.FC = () => {
 							className='basis-1/2 pl-4 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 2xl:basis-[14.285714%]'>
 							<div
 								className={cn('flex aspect-[3/4] flex-col gap-y-2.5', {
-									'pointer-events-none opacity-50': isCreating,
+									'pointer-events-none opacity-50': isPending,
 								})}>
 								<button
 									className='relative flex size-full flex-col items-center justify-center gap-y-4 overflow-hidden rounded-sm border bg-white transition hover:border-blue-500 hover:bg-blue-50'
-									disabled={isCreating}
-									onClick={() =>
-										handleClick({ title: label, content: '', authorId: session?.user.id || '' })
-									}>
+									onClick={() => onClick({ title: label })}>
 									<img
 										className='absolute top-0 left-0 size-full object-cover'
 										src={imageUrl}
@@ -66,7 +64,7 @@ export const TemplatesGallery: React.FC = () => {
 				</CarouselContent>
 				<CarouselPrevious />
 				<CarouselNext />
-			</Carousel> */}
+			</Carousel>
 		</div>
 	);
 };

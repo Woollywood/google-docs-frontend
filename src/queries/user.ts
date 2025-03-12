@@ -3,7 +3,7 @@ import { QueryKeys } from './queryKeys';
 import { AuthService } from '@/services/AuthService';
 import { LazyQuery } from './interface';
 
-export const useGetMe = ({ enabled }: LazyQuery) => {
+export const useGetMe = ({ enabled = true }: LazyQuery = {} as LazyQuery) => {
 	return useQuery({
 		queryKey: [QueryKeys.CURRENT_USER],
 		queryFn: () => AuthService.getMe(),

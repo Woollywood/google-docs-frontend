@@ -1,3 +1,4 @@
+import { DocumentsTable } from '@/components/shared/DocumentsTable';
 import { Navbar } from '@/components/shared/navbars/root';
 import { TemplatesGallery } from '@/components/shared/TemplatesGallery';
 import { createFileRoute } from '@tanstack/react-router';
@@ -11,7 +12,7 @@ function Index() {
 		<div className='grid h-full grid-rows-[auto_1fr] gap-6'>
 			<Navbar />
 			<TemplatesGallery />
-			{/* {isPending ? <div>Loading...</div> : data?.data.map(({ title, id }) => <h1 key={id}>{title}</h1>)} */}
+			<DocumentsTable />
 		</div>
 	);
 }
