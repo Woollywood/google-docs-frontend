@@ -1,4 +1,7 @@
 export enum QueryKeys {
 	CURRENT_USER = 'currentUser',
+	USERS = 'users',
 	DOCUMENTS = 'documents',
+	ORGANIZATIONS = 'organizations',
+	CURRENT_ORGANIZATION = 'currentOrganization',
 }

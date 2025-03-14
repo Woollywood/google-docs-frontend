@@ -3,7 +3,7 @@ import { InfiniteList } from '@/components/shared/InfiniteList';
 import { useGetDocuments } from '@/queries/documents';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { SiGoogledocs } from 'react-icons/si';
-import { CircleUserIcon } from 'lucide-react';
+import { Building2Icon, CircleUserIcon } from 'lucide-react';
 import { ListSpinner } from '@/components/shared/spinners/ListSpinner';
 import { DocumentMenu } from './DocumentMenu';
 import { useNavigate } from '@tanstack/react-router';
@@ -56,8 +56,15 @@ export const DocumentsTable: React.FC = () => {
 										</TableCell>
 										<TableCell className='font-medium md:w-[45%]'>{document.title}</TableCell>
 										<TableCell className='text-muted-foreground hidden items-center gap-2 md:flex'>
-											{/* TODO organization */}
-											<CircleUserIcon className='size-4' /> Personal
+											{document.organization ? (
+												<>
+													<Building2Icon className='size-4' /> Organization
+												</>
+											) : (
+												<>
+													<CircleUserIcon className='size-4' /> Personal
+												</>
+											)}
 										</TableCell>
 										<TableCell className='text-muted-foreground hidden md:table-cell'>
 											{moment(document.createdAt).format('LL')}

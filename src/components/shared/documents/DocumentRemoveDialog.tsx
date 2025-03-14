@@ -1,5 +1,5 @@
 import React from 'react';
-import { RemoveDialog } from '../dialogs/RemoveDialog';
+import { AlertDialog } from '../modals/AlertDialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { TrashIcon } from 'lucide-react';
 import { useDeleteDocument } from '@/queries/documents';
@@ -12,7 +12,7 @@ export const DocumentDeleteDialog: React.FC<Props> = ({ id }) => {
 	const { mutateAsync, isPending } = useDeleteDocument();
 
 	return (
-		<RemoveDialog handler={() => mutateAsync(id)} isPending={isPending}>
+		<AlertDialog handler={() => mutateAsync(id)} isPending={isPending}>
 			<DropdownMenuItem
 				className='w-full'
 				onSelect={(e) => e.preventDefault()}
@@ -20,6 +20,6 @@ export const DocumentDeleteDialog: React.FC<Props> = ({ id }) => {
 				<TrashIcon className='mr-2 size-4' />
 				Delete
 			</DropdownMenuItem>
-		</RemoveDialog>
+		</AlertDialog>
 	);
 };

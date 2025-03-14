@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-	Dialog,
+	Dialog as DialogRoot,
 	DialogContent,
 	DialogDescription,
 	DialogFooter,
@@ -15,11 +15,11 @@ interface Props extends React.PropsWithChildren {
 	description: string;
 	triggerChild: React.ReactNode;
 	isPending: boolean;
-	isSubmitSuccessful: boolean;
-	handler: () => Promise<unknown>;
+	isSubmitSuccessful?: boolean;
+	handler?: () => Promise<unknown>;
 }
 
-export const RenameDialog: React.FC<Props> = ({
+export const Dialog: React.FC<Props> = ({
 	title,
 	description,
 	triggerChild,
@@ -34,7 +34,7 @@ export const RenameDialog: React.FC<Props> = ({
 		e.preventDefault();
 		e.stopPropagation();
 
-		await handler();
+		await handler?.();
 	};
 
 	useEffect(() => {
@@ -44,7 +44,7 @@ export const RenameDialog: React.FC<Props> = ({
 	}, [isSubmitSuccessful]);
 
 	return (
-		<Dialog open={open} onOpenChange={setOpen}>
+		<DialogRoot open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>{triggerChild}</DialogTrigger>
 			<DialogContent className='sm:max-w-[425px]' onClick={(e) => e.stopPropagation()}>
 				<DialogHeader>
@@ -59,6 +59,6 @@ export const RenameDialog: React.FC<Props> = ({
 					</Button>
 				</DialogFooter>
 			</DialogContent>
-		</Dialog>
+		</DialogRoot>
 	);
 };

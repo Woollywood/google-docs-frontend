@@ -22,6 +22,20 @@ export interface Document {
 	title: string;
 	content: string | null;
 	user: User;
+	organization: User;
+}
+
+export interface Organization {
+	id: string;
+	/** @format date-time */
+	createdAt: string;
+	/** @format date-time */
+	updatedAt: string;
+	title: string;
+	owner: User;
+	activeUsers: User[];
+	members: User[];
+	documents: any[][];
 }
 
 export interface User {
@@ -46,6 +60,9 @@ export interface User {
 	password: string;
 	sessions: Session[];
 	documents: Document[];
+	organizations: Organization[];
+	currentOrganization: Organization;
+	ownedOrganizations: Organization[];
 }
 
 export interface Session {
@@ -57,6 +74,20 @@ export interface Session {
 	accessToken: string;
 	refreshToken: string;
 	user: User;
+}
+
+export interface PageMetaDto {
+	page: number;
+	take: number;
+	itemCount: number;
+	pageCount: number;
+	hasPreviousPage: boolean;
+	hasNextPage: boolean;
+}
+
+export interface PaginatedUserModel {
+	data: User[];
+	meta: PageMetaDto;
 }
 
 export interface CreateUserDto {
@@ -92,16 +123,7 @@ export interface ResetPasswordLinkDto {
 	newPassword: string;
 }
 
-export interface PageMetaDto {
-	page: number;
-	take: number;
-	itemCount: number;
-	pageCount: number;
-	hasPreviousPage: boolean;
-	hasNextPage: boolean;
-}
-
-export interface PaginatedModel {
+export interface PaginatedDocumentModel {
 	data: Document[];
 	meta: PageMetaDto;
 }
@@ -122,6 +144,16 @@ export interface UpdateDocumentDto {
 	 */
 	title?: string;
 	content?: string | null;
+}
+
+export interface CreateOrganizationDto {
+	title: string;
+}
+
+export interface MemberDto {
+	/** organization id */
+	id: string;
+	username: string;
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from 'axios';
@@ -276,13 +308,49 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Users
 		 * @name UsersControllerGetMe
-		 * @request GET:/users/me
+		 * @request GET:/api/v1/users/me
 		 * @secure
 		 */
 		usersControllerGetMe: (params: RequestParams = {}) =>
 			this.http.request<User, any>({
-				path: `/users/me`,
+				path: `/api/v1/users/me`,
 				method: 'GET',
+				secure: true,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Users
+		 * @name UsersControllerGetUsers
+		 * @request GET:/api/v1/users/my
+		 * @secure
+		 */
+		usersControllerGetUsers: (
+			query: {
+				/** @default "ASC" */
+				order?: 'ASC' | 'DESC';
+				/**
+				 * @min 1
+				 * @default 1
+				 */
+				page?: number;
+				/**
+				 * @min 1
+				 * @max 50
+				 * @default 10
+				 */
+				take?: number;
+				search: string;
+			},
+			params: RequestParams = {},
+		) =>
+			this.http.request<PaginatedUserModel, any>({
+				path: `/api/v1/users/my`,
+				method: 'GET',
+				query: query,
 				secure: true,
 				format: 'json',
 				...params,
@@ -294,11 +362,11 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Auth
 		 * @name AuthControllerSignUp
-		 * @request POST:/auth/sign-up
+		 * @request POST:/api/v1/auth/sign-up
 		 */
 		authControllerSignUp: (data: CreateUserDto, params: RequestParams = {}) =>
 			this.http.request<AuthTokensDto, any>({
-				path: `/auth/sign-up`,
+				path: `/api/v1/auth/sign-up`,
 				method: 'POST',
 				body: data,
 				type: ContentType.Json,
@@ -311,11 +379,11 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Auth
 		 * @name AuthControllerSignIn
-		 * @request POST:/auth/sign-in
+		 * @request POST:/api/v1/auth/sign-in
 		 */
 		authControllerSignIn: (data: CreateUserDto, params: RequestParams = {}) =>
 			this.http.request<AuthTokensDto, any>({
-				path: `/auth/sign-in`,
+				path: `/api/v1/auth/sign-in`,
 				method: 'POST',
 				body: data,
 				type: ContentType.Json,
@@ -328,12 +396,14 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Auth
 		 * @name AuthControllerSignOut
-		 * @request POST:/auth/sign-out
+		 * @request POST:/api/v1/auth/sign-out
+		 * @secure
 		 */
 		authControllerSignOut: (params: RequestParams = {}) =>
 			this.http.request<void, any>({
-				path: `/auth/sign-out`,
+				path: `/api/v1/auth/sign-out`,
 				method: 'POST',
+				secure: true,
 				...params,
 			}),
 
@@ -342,11 +412,11 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Auth
 		 * @name AuthControllerRefresh
-		 * @request POST:/auth/refresh
+		 * @request POST:/api/v1/auth/refresh
 		 */
 		authControllerRefresh: (data: RefreshDto, params: RequestParams = {}) =>
 			this.http.request<AuthTokensDto, any>({
-				path: `/auth/refresh`,
+				path: `/api/v1/auth/refresh`,
 				method: 'POST',
 				body: data,
 				type: ContentType.Json,
@@ -359,11 +429,11 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Auth
 		 * @name AuthControllerVerifyEmail
-		 * @request POST:/auth/verify-email
+		 * @request POST:/api/v1/auth/verify-email
 		 */
 		authControllerVerifyEmail: (data: TokenDto, params: RequestParams = {}) =>
 			this.http.request<void, any>({
-				path: `/auth/verify-email`,
+				path: `/api/v1/auth/verify-email`,
 				method: 'POST',
 				body: data,
 				type: ContentType.Json,
@@ -375,11 +445,11 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Auth
 		 * @name AuthControllerResetPasswordLink
-		 * @request POST:/auth/reset-password-link
+		 * @request POST:/api/v1/auth/reset-password-link
 		 */
 		authControllerResetPasswordLink: (data: ResetPasswordLinkDto, params: RequestParams = {}) =>
 			this.http.request<void, any>({
-				path: `/auth/reset-password-link`,
+				path: `/api/v1/auth/reset-password-link`,
 				method: 'POST',
 				body: data,
 				type: ContentType.Json,
@@ -391,11 +461,11 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Auth
 		 * @name AuthControllerResetPassword
-		 * @request POST:/auth/reset-password
+		 * @request POST:/api/v1/auth/reset-password
 		 */
 		authControllerResetPassword: (data: TokenDto, params: RequestParams = {}) =>
 			this.http.request<void, any>({
-				path: `/auth/reset-password`,
+				path: `/api/v1/auth/reset-password`,
 				method: 'POST',
 				body: data,
 				type: ContentType.Json,
@@ -408,7 +478,8 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Documents
 		 * @name DocumentsControllerGetMyDocuments
-		 * @request GET:/documents/my
+		 * @request GET:/api/v1/documents/my
+		 * @secure
 		 */
 		documentsControllerGetMyDocuments: (
 			query: {
@@ -429,10 +500,11 @@ export class Api<SecurityDataType extends unknown> {
 			},
 			params: RequestParams = {},
 		) =>
-			this.http.request<PaginatedModel, any>({
-				path: `/documents/my`,
+			this.http.request<PaginatedDocumentModel, any>({
+				path: `/api/v1/documents/my`,
 				method: 'GET',
 				query: query,
+				secure: true,
 				format: 'json',
 				...params,
 			}),
@@ -442,13 +514,15 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Documents
 		 * @name DocumentsControllerCreateDocument
-		 * @request POST:/documents
+		 * @request POST:/api/v1/documents
+		 * @secure
 		 */
 		documentsControllerCreateDocument: (data: CreateDocumentDto, params: RequestParams = {}) =>
 			this.http.request<Document, any>({
-				path: `/documents`,
+				path: `/api/v1/documents`,
 				method: 'POST',
 				body: data,
+				secure: true,
 				type: ContentType.Json,
 				format: 'json',
 				...params,
@@ -459,12 +533,14 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Documents
 		 * @name DocumentsControllerGetDocument
-		 * @request GET:/documents/{id}
+		 * @request GET:/api/v1/documents/{id}
+		 * @secure
 		 */
 		documentsControllerGetDocument: (id: string, params: RequestParams = {}) =>
 			this.http.request<Document, any>({
-				path: `/documents/${id}`,
+				path: `/api/v1/documents/${id}`,
 				method: 'GET',
+				secure: true,
 				format: 'json',
 				...params,
 			}),
@@ -474,12 +550,14 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Documents
 		 * @name DocumentsControllerDelete
-		 * @request DELETE:/documents/{id}
+		 * @request DELETE:/api/v1/documents/{id}
+		 * @secure
 		 */
 		documentsControllerDelete: (id: string, params: RequestParams = {}) =>
 			this.http.request<void, any>({
-				path: `/documents/${id}`,
+				path: `/api/v1/documents/${id}`,
 				method: 'DELETE',
+				secure: true,
 				...params,
 			}),
 
@@ -488,13 +566,153 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Documents
 		 * @name DocumentsControllerPath
-		 * @request PATCH:/documents/{id}
+		 * @request PATCH:/api/v1/documents/{id}
+		 * @secure
 		 */
 		documentsControllerPath: (id: string, data: UpdateDocumentDto, params: RequestParams = {}) =>
 			this.http.request<void, any>({
-				path: `/documents/${id}`,
+				path: `/api/v1/documents/${id}`,
 				method: 'PATCH',
 				body: data,
+				secure: true,
+				type: ContentType.Json,
+				...params,
+			}),
+	};
+	organizations = {
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerGetMy
+		 * @request GET:/api/v1/organizations/my
+		 * @secure
+		 */
+		organizationsControllerGetMy: (params: RequestParams = {}) =>
+			this.http.request<Organization[], any>({
+				path: `/api/v1/organizations/my`,
+				method: 'GET',
+				secure: true,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerGetCurrent
+		 * @request GET:/api/v1/organizations/current
+		 * @secure
+		 */
+		organizationsControllerGetCurrent: (params: RequestParams = {}) =>
+			this.http.request<Organization, any>({
+				path: `/api/v1/organizations/current`,
+				method: 'GET',
+				secure: true,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerJoin
+		 * @request POST:/api/v1/organizations/join/{id}
+		 * @secure
+		 */
+		organizationsControllerJoin: (id: string, params: RequestParams = {}) =>
+			this.http.request<void, any>({
+				path: `/api/v1/organizations/join/${id}`,
+				method: 'POST',
+				secure: true,
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerLeave
+		 * @request POST:/api/v1/organizations/leave
+		 * @secure
+		 */
+		organizationsControllerLeave: (params: RequestParams = {}) =>
+			this.http.request<void, any>({
+				path: `/api/v1/organizations/leave`,
+				method: 'POST',
+				secure: true,
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerCreate
+		 * @request POST:/api/v1/organizations/new
+		 * @secure
+		 */
+		organizationsControllerCreate: (data: CreateOrganizationDto, params: RequestParams = {}) =>
+			this.http.request<Organization, any>({
+				path: `/api/v1/organizations/new`,
+				method: 'POST',
+				body: data,
+				secure: true,
+				type: ContentType.Json,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerDelete
+		 * @request DELETE:/api/v1/organizations/{id}
+		 * @secure
+		 */
+		organizationsControllerDelete: (id: string, params: RequestParams = {}) =>
+			this.http.request<void, any>({
+				path: `/api/v1/organizations/${id}`,
+				method: 'DELETE',
+				secure: true,
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerAddMember
+		 * @request POST:/api/v1/organizations/members
+		 * @secure
+		 */
+		organizationsControllerAddMember: (data: MemberDto, params: RequestParams = {}) =>
+			this.http.request<void, any>({
+				path: `/api/v1/organizations/members`,
+				method: 'POST',
+				body: data,
+				secure: true,
+				type: ContentType.Json,
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerKickMember
+		 * @request DELETE:/api/v1/organizations/members
+		 * @secure
+		 */
+		organizationsControllerKickMember: (data: MemberDto, params: RequestParams = {}) =>
+			this.http.request<void, any>({
+				path: `/api/v1/organizations/members`,
+				method: 'DELETE',
+				body: data,
+				secure: true,
 				type: ContentType.Json,
 				...params,
 			}),

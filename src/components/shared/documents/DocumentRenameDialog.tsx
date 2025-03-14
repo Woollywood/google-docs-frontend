@@ -1,12 +1,12 @@
 import React from 'react';
-import { RenameDialog } from '../dialogs/RenameDialog';
+import { Dialog } from '../modals/Dialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { FilePenIcon } from 'lucide-react';
 import { useUpdateDocument } from '@/queries/documents';
 import { useForm } from 'react-hook-form';
 import { renameSchema, RenameSchema } from '@/schemas/documents';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 
 interface Props {
@@ -32,7 +32,7 @@ export const DocumentRenameDialog: React.FC<Props> = ({ id, title = '' }) => {
 		formState: { isSubmitSuccessful },
 	} = form;
 	return (
-		<RenameDialog
+		<Dialog
 			title='Rename Document'
 			description='Enter new title'
 			isPending={isPending}
@@ -53,16 +53,14 @@ export const DocumentRenameDialog: React.FC<Props> = ({ id, title = '' }) => {
 					name='title'
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel />
 							<FormControl>
 								<Input {...field} />
 							</FormControl>
-							<FormDescription />
 							<FormMessage />
 						</FormItem>
 					)}
 				/>
 			</Form>
-		</RenameDialog>
+		</Dialog>
 	);
 };

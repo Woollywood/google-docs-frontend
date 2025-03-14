@@ -4,7 +4,7 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"generate-api-types": "npx swagger-typescript-api -p http://localhost:3000/api-json -o ./src/api --axios --single-http-client -n generatedApi.ts",
+		"generate-api-types": "npx swagger-typescript-api -p http://localhost:3000/api-json -o ./src/api --axios --single-http-client --module-name-index 2 -n generatedApi.ts",
 		"generate-routes": "tsr generate",
 		"watch-routes": "tsr watch",
 		"dev": "vite && npm run watch-routes",
@@ -89,6 +89,7 @@
 		"tailwindcss": "^4.0.13",
 		"tailwindcss-animate": "^1.0.7",
 		"tiptap-extension-resize-image": "^1.2.1",
+		"uuid": "^11.1.0",
 		"vaul": "^1.1.2",
 		"zod": "^3.24.2"
 	},

@@ -1,11 +1,12 @@
 import { CreateUserDto, TokenDto } from '@/api/generatedApi';
 import { AuthService, AuthTokens } from '@/services/AuthService';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from './queryKeys';
 import { $api } from '@/api';
 import { useNavigate } from '@tanstack/react-router';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { useSearchParam } from '@/hooks/useSearchParam';
+import { LazyQuery } from './interface';
 
 export const useSignUp = () => {
 	const [, setAccessToken] = useLocalStorage<string>(AuthTokens.ACCESS_TOKEN);
@@ -76,5 +77,13 @@ export const useResetPassword = () => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.CURRENT_USER] });
 		},
+	});
+};
+
+export const useGetMe = ({ enabled = true }: LazyQuery = {} as LazyQuery) => {
+	return useQuery({
+		queryKey: [QueryKeys.CURRENT_USER],
+		queryFn: () => AuthService.getMe(),
+		enabled,
 	});
 };

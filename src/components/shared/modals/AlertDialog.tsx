@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-	AlertDialog,
+	AlertDialog as AlertDialogRoot,
 	AlertDialogAction,
 	AlertDialogCancel,
 	AlertDialogContent,
@@ -16,7 +16,7 @@ interface Props extends React.PropsWithChildren {
 	isPending?: boolean;
 }
 
-export const RemoveDialog: React.FC<Props> = ({ children, isPending, handler }) => {
+export const AlertDialog: React.FC<Props> = ({ children, isPending, handler }) => {
 	const [open, setOpen] = useState(false);
 
 	const onClick = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -27,7 +27,7 @@ export const RemoveDialog: React.FC<Props> = ({ children, isPending, handler }) 
 	};
 
 	return (
-		<AlertDialog open={open} onOpenChange={setOpen}>
+		<AlertDialogRoot open={open} onOpenChange={setOpen}>
 			<AlertDialogTrigger asChild className='w-full'>
 				{children}
 			</AlertDialogTrigger>
@@ -43,6 +43,6 @@ export const RemoveDialog: React.FC<Props> = ({ children, isPending, handler }) 
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
-		</AlertDialog>
+		</AlertDialogRoot>
 	);
 };
