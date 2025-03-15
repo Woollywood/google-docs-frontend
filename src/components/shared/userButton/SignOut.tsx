@@ -1,7 +1,7 @@
 import React, { useTransition } from 'react';
 import { DropdownMenuItem, DropdownMenuShortcut } from '@/components/ui/dropdown-menu';
 import { Loader2Icon, LogOut } from 'lucide-react';
-import { useSignOut } from '@/queries/auth';
+import { useSignOut } from '@/api/hooks/mutations/auth';
 
 export const SignOut: React.FC = () => {
 	const { mutateAsync } = useSignOut();

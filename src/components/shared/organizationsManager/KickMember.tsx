@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ContextMenuItem } from '@/components/ui/context-menu';
-import { useGetUsers } from '@/queries/users';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { InfiniteList } from '../InfiniteList';
@@ -14,7 +13,8 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import { useKickMember } from '@/queries/organizations';
+import { useKickMember } from '@/api/hooks/mutations/organizations';
+import { useGetUsers } from '@/api/hooks/queries/users';
 
 interface Props {
 	organizationId: string;

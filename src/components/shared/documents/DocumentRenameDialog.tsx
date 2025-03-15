@@ -2,12 +2,12 @@ import React from 'react';
 import { Dialog } from '../modals/Dialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { FilePenIcon } from 'lucide-react';
-import { useUpdateDocument } from '@/queries/documents';
 import { useForm } from 'react-hook-form';
 import { renameSchema, RenameSchema } from '@/schemas/documents';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useUpdateDocument } from '@/api/hooks/mutations/documents';
 
 interface Props {
 	id: string;

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { InfiniteList } from '@/components/shared/InfiniteList';
-import { useGetDocuments } from '@/queries/documents';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { SiGoogledocs } from 'react-icons/si';
 import { Building2Icon, CircleUserIcon } from 'lucide-react';
@@ -9,6 +8,7 @@ import { DocumentMenu } from './DocumentMenu';
 import { useNavigate } from '@tanstack/react-router';
 import { useSearchParam } from '@/hooks/useSearchParam';
 import moment from 'moment';
+import { useGetDocuments } from '@/api/hooks/queries/documents';
 
 export const DocumentsTable: React.FC = () => {
 	const [search] = useSearchParam('search');

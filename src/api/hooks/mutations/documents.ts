@@ -1,28 +1,8 @@
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QueryKeys } from './queryKeys';
+import { $api } from '@/api/instance';
+import { ApiLayer } from '@/api/layer';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { QueryKeys } from '../queryKeys';
 import { CreateDocumentDto, UpdateDocumentDto } from '@/api/generatedApi';
-import { LazyQuery, SearchQuery } from './interface';
-import { $api, ApiLayer } from '@/api';
-
-export const useGetDocuments = (
-	{ enabled = true, search = '' }: LazyQuery & SearchQuery = {} as LazyQuery & SearchQuery,
-) => {
-	return useInfiniteQuery({
-		queryKey: [QueryKeys.DOCUMENTS],
-		queryFn: ({ pageParam }) =>
-			ApiLayer.getDataFrom($api.documents.documentsControllerGetMyDocuments({ page: pageParam, search })),
-		initialPageParam: 1,
-		getNextPageParam: (lastPage, _, lastPageParam) => (lastPage.meta.hasNextPage ? lastPageParam + 1 : undefined),
-		enabled,
-	});
-};
-
-export const useGetDocumentById = (id: string) => {
-	return useQuery({
-		queryKey: [QueryKeys.DOCUMENTS, id],
-		queryFn: () => ApiLayer.getDataFrom($api.documents.documentsControllerGetDocument(id)),
-	});
-};
 
 export const useCreateDocument = () => {
 	const queryClient = useQueryClient();

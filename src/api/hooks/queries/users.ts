@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { QueryKeys } from './queryKeys';
-import { LazyQuery, SearchQuery } from './interface';
 import { $api, ApiLayer } from '@/api';
+import { LazyQuery, SearchQuery } from '../types';
+import { QueryKeys } from '../queryKeys';
 
 export const useGetUsers = (
 	{ enabled = true, search = '' }: LazyQuery & SearchQuery = {} as LazyQuery & SearchQuery,

@@ -4,7 +4,7 @@ import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { useSearchParam } from '@/hooks/useSearchParam';
-import { useResetPassword } from '@/queries/auth';
+import { useResetPassword } from '@/api/hooks/mutations/auth';
 
 export const Route = createFileRoute('/_unauthenticated/auth/_layout/reset-password')({
 	component: RouteComponent,

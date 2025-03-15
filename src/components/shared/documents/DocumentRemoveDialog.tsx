@@ -2,7 +2,7 @@ import React from 'react';
 import { AlertDialog } from '../modals/AlertDialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { TrashIcon } from 'lucide-react';
-import { useDeleteDocument } from '@/queries/documents';
+import { useDeleteDocument } from '@/api/hooks/mutations/documents';
 
 interface Props {
 	id: string;

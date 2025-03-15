@@ -6,7 +6,7 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 import { routeTree } from './routeTree.gen';
 import { Loader2Icon } from 'lucide-react';
 import { AuthTokens } from './services/AuthService';
-import { useIdentity } from './queries/auth';
+import { useIdentity } from './api/hooks/queries/auth';
 
 // Create a new router instance
 const router = createRouter({ routeTree });

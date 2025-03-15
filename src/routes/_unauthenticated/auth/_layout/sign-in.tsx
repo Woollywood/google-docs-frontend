@@ -6,9 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useSearchParam } from '@/hooks/useSearchParam';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useSignIn } from '@/queries/auth';
 import { useHandleError } from '@/hooks/useHandleError';
 import { signInSchema, SignInSchema } from '@/schemas/auth';
+import { useSignIn } from '@/api/hooks/mutations/auth';
 
 export const Route = createFileRoute('/_unauthenticated/auth/_layout/sign-in')({
 	component: RouteComponent,

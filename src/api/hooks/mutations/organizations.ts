@@ -1,23 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { QueryKeys } from './queryKeys';
+import { $api } from '@/api/instance';
+import { ApiLayer } from '@/api/layer';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { QueryKeys } from '../queryKeys';
 import { CreateOrganizationDto, MemberDto } from '@/api/generatedApi';
-import { LazyQuery } from './interface';
-import { $api, ApiLayer } from '@/api';
-
-export const useGetMyOrganizations = () => {
-	return useQuery({
-		queryKey: [QueryKeys.ORGANIZATIONS],
-		queryFn: () => ApiLayer.getDataFrom($api.organizations.organizationsControllerGetMy()),
-	});
-};
-
-export const useGetCurrentOrganization = ({ enabled = true }: LazyQuery = {} as LazyQuery) => {
-	return useQuery({
-		queryKey: [QueryKeys.CURRENT_ORGANIZATION],
-		queryFn: () => ApiLayer.getDataFrom($api.organizations.organizationsControllerGetCurrent()),
-		enabled,
-	});
-};
 
 export const useCreateOrganization = () => {
 	const queryClient = useQueryClient();

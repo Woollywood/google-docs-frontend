@@ -5,9 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { CreateOrganizationSchema, createOrganizationSchema } from '@/schemas/organizations';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useCreateOrganization } from '@/queries/organizations';
 import { FaPlus } from 'react-icons/fa';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { useCreateOrganization } from '@/api/hooks/mutations/organizations';
 
 export const CreateNew: React.FC = () => {
 	const { mutateAsync, isPending } = useCreateOrganization();

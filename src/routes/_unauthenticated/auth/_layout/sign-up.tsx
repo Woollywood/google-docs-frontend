@@ -6,9 +6,9 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { useSignUp } from '@/queries/auth';
 import { useHandleError } from '@/hooks/useHandleError';
 import { signUpSchema, SignUpSchema } from '@/schemas/auth';
+import { useSignUp } from '@/api/hooks/mutations/auth';
 
 export const Route = createFileRoute('/_unauthenticated/auth/_layout/sign-up')({
 	component: RouteComponent,

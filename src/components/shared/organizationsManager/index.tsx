@@ -1,5 +1,4 @@
 import React from 'react';
-import { useGetCurrentOrganization, useGetMyOrganizations } from '@/queries/organizations';
 import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { OrganizationList } from './OrganizationList';
@@ -11,6 +10,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useGetCurrentOrganization, useGetMyOrganizations } from '@/api/hooks/queries/organizations';
 
 export const OrganizationsManager: React.FC = () => {
 	const { data, isPending } = useGetCurrentOrganization();

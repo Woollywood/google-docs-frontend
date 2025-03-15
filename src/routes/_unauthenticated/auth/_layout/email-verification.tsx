@@ -4,7 +4,7 @@ import { useSearchParam } from '@/hooks/useSearchParam';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { toast } from 'sonner';
 import { Loader2Icon } from 'lucide-react';
-import { useVerifyEmail } from '@/queries/auth';
+import { useVerifyEmail } from '@/api/hooks/mutations/auth';
 
 export const Route = createFileRoute('/_unauthenticated/auth/_layout/email-verification')({
 	component: RouteComponent,

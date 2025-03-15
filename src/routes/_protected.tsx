@@ -1,6 +1,6 @@
 import { UserDto } from '@/api/generatedApi';
+import { QueryKeys } from '@/api/hooks/queryKeys';
 import { queryClient } from '@/lib/tanstackQuery';
-import { QueryKeys } from '@/queries/queryKeys';
 import { AuthService } from '@/services/AuthService';
 import { Outlet, redirect } from '@tanstack/react-router';
 import { createFileRoute } from '@tanstack/react-router';

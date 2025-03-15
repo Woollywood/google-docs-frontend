@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { OrganizationDto } from '@/api/generatedApi';
 import { v4 as uuid } from 'uuid';
 import { ImSpinner8 } from 'react-icons/im';
-import { useGetCurrentOrganization, useJoinOrganization, useLeaveOrganization } from '@/queries/organizations';
 import { CreateNew } from './CreateNew';
 import { isObject } from 'lodash-es';
 import { DropdownMenuCheckboxItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { ContextMenu, ContextMenuContent, ContextMenuTrigger } from '@/components/ui/context-menu';
-import { useIdentity } from '@/queries/auth';
 import { AddMember } from './AddMember';
 import { KickMember } from './KickMember';
+import { useJoinOrganization, useLeaveOrganization } from '@/api/hooks/mutations/organizations';
+import { useGetCurrentOrganization } from '@/api/hooks/queries/organizations';
+import { useIdentity } from '@/api/hooks/queries/auth';
 
 interface Props {
 	isPending: boolean;

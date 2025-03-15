@@ -1,6 +1,6 @@
+import { useGetDocumentById } from '@/api/hooks/queries/documents';
 import { Editor } from '@/components/shared/editor';
 import { Navbar } from '@/components/shared/navbars/document';
-import { useGetDocumentById } from '@/queries/documents';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_protected/documents/$id/')({

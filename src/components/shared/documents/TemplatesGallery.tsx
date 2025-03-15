@@ -2,9 +2,9 @@ import React from 'react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
-import { useCreateDocument } from '@/queries/documents';
 import { CreateDocumentDto } from '@/api/generatedApi';
 import { useHandleError } from '@/hooks/useHandleError';
+import { useCreateDocument } from '@/api/hooks/mutations/documents';
 
 interface Template {
 	id: string;
