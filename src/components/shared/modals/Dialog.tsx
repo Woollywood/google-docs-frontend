@@ -29,7 +29,6 @@ export const Dialog: React.FC<Props> = ({
 	handler,
 }) => {
 	const [open, setOpen] = useState(false);
-	console.log(open);
 
 	const onSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 		e.preventDefault();

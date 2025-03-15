@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { $api } from '@/api';
+import { $api } from '@/api/instance';
 import { useHandleError } from '@/hooks/useHandleError';
 import { forgotPasswordSchema, ForgotPasswordSchema } from '@/schemas/auth';
 

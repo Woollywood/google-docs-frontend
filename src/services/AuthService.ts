@@ -1,4 +1,4 @@
-import { $api } from '@/api';
+import { $api } from '@/api/instance';
 import { AuthTokensDto, CreateUserDto } from '@/api/generatedApi';
 import { isNil } from 'lodash-es';
 import { LocalStorageService } from './LocalStorageService';

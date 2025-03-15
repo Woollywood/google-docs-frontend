@@ -2,7 +2,7 @@ import { CreateUserDto, TokenDto } from '@/api/generatedApi';
 import { AuthService, AuthTokens } from '@/services/AuthService';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from './queryKeys';
-import { $api } from '@/api';
+import { $api } from '@/api/instance';
 import { useNavigate } from '@tanstack/react-router';
 import { useLocalStorage } from '@uidotdev/usehooks';
 import { useSearchParam } from '@/hooks/useSearchParam';
