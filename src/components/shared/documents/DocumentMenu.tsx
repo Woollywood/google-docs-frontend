@@ -7,12 +7,12 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Link } from '@tanstack/react-router';
-import { Document } from '@/api/generatedApi';
+import { DocumentDto } from '@/api/generatedApi';
 import { Button } from '@/components/ui/button';
 import { DocumentRenameDialog } from './DocumentRenameDialog';
 import { DocumentDeleteDialog } from './DocumentRemoveDialog';
 
-type Props = Document;
+type Props = DocumentDto;
 
 export const DocumentMenu: React.FC<Props> = ({ id, title }) => {
 	return (

@@ -80,10 +80,10 @@ export const useResetPassword = () => {
 	});
 };
 
-export const useGetMe = ({ enabled = true }: LazyQuery = {} as LazyQuery) => {
+export const useIdentity = ({ enabled = true }: LazyQuery = {} as LazyQuery) => {
 	return useQuery({
 		queryKey: [QueryKeys.CURRENT_USER],
-		queryFn: () => AuthService.getMe(),
+		queryFn: () => AuthService.identity(),
 		enabled,
 	});
 };

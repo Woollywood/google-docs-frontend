@@ -35,7 +35,10 @@ export const CreateNew: React.FC = () => {
 			handler={onSubmit}
 			isPending={isPending}
 			triggerChild={
-				<DropdownMenuItem onClick={(e) => e.stopPropagation()} className='justify-center'>
+				<DropdownMenuItem
+					onClick={(e) => e.stopPropagation()}
+					onSelect={(e) => e.preventDefault()}
+					className='justify-center'>
 					<FaPlus className='size-3' />
 					Create
 				</DropdownMenuItem>

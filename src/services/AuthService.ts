@@ -38,8 +38,8 @@ class _AuthService {
 		return data;
 	}
 
-	async getMe() {
-		const { data } = await $api.users.usersControllerGetMe();
+	async identity() {
+		const { data } = await $api.auth.authControllerIdentity();
 		return data;
 	}
 

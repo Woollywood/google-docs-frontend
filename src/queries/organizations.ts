@@ -37,6 +37,7 @@ export const useJoinOrganization = () => {
 		mutationFn: (id: string) => OrganizationsService.join(id),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.CURRENT_ORGANIZATION] });
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.CURRENT_USER] });
 		},
 	});
 };
@@ -48,6 +49,7 @@ export const useLeaveOrganization = () => {
 		mutationFn: () => OrganizationsService.leave(),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.CURRENT_ORGANIZATION] });
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.CURRENT_USER] });
 		},
 	});
 };

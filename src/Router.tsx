@@ -6,7 +6,7 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 import { routeTree } from './routeTree.gen';
 import { Loader2Icon } from 'lucide-react';
 import { AuthTokens } from './services/AuthService';
-import { useGetMe } from './queries/auth';
+import { useIdentity } from './queries/auth';
 
 // Create a new router instance
 const router = createRouter({ routeTree });
@@ -24,7 +24,7 @@ export const Router: React.FC = () => {
 	const [emailVerifyed] = useLocalStorage<boolean>(AuthTokens.EMAIL_VERIFYED, false);
 	const enabled = !!accessToken && !!refreshToken && emailVerifyed;
 
-	const { isPending, isFetching } = useGetMe({ enabled });
+	const { isPending, isFetching } = useIdentity({ enabled });
 	const isLoading = isPending && isFetching;
 
 	return isLoading ? (

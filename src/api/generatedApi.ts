@@ -9,71 +9,19 @@
  * ---------------------------------------------------------------
  */
 
-export interface Document {
+export interface UserDto {
 	id: string;
 	/** @format date-time */
 	createdAt: string;
 	/** @format date-time */
 	updatedAt: string;
-	/**
-	 * @minLength 3
-	 * @example "blank"
-	 */
-	title: string;
-	content: string | null;
-	user: User;
-	organization: User;
-}
-
-export interface Organization {
-	id: string;
-	/** @format date-time */
-	createdAt: string;
-	/** @format date-time */
-	updatedAt: string;
-	title: string;
-	owner: User;
-	activeUsers: User[];
-	members: User[];
-	documents: any[][];
-}
-
-export interface User {
-	id: string;
-	/** @format date-time */
-	createdAt: string;
-	/** @format date-time */
-	updatedAt: string;
-	/**
-	 * @minLength 3
-	 * @example "john"
-	 */
+	/** @minLength 3 */
 	username: string;
-	/** @example "example@example.com" */
 	email: string;
-	/** @example false */
 	emailVerified: boolean;
-	/**
-	 * @minLength 6
-	 * @example "changeme"
-	 */
+	/** @minLength 3 */
 	password: string;
-	sessions: Session[];
-	documents: Document[];
-	organizations: Organization[];
-	currentOrganization: Organization;
-	ownedOrganizations: Organization[];
-}
-
-export interface Session {
-	id: string;
-	/** @format date-time */
-	createdAt: string;
-	/** @format date-time */
-	updatedAt: string;
-	accessToken: string;
-	refreshToken: string;
-	user: User;
+	activeOrganizationId: string | null;
 }
 
 export interface PageMetaDto {
@@ -86,7 +34,7 @@ export interface PageMetaDto {
 }
 
 export interface PaginatedUserModel {
-	data: User[];
+	data: UserDto[];
 	meta: PageMetaDto;
 }
 
@@ -110,6 +58,17 @@ export interface AuthTokensDto {
 	refreshToken: string;
 }
 
+export interface SessionDto {
+	id: string;
+	/** @format date-time */
+	createdAt: string;
+	/** @format date-time */
+	updatedAt: string;
+	accessToken: string;
+	refreshToken: string;
+	userId: string | null;
+}
+
 export interface RefreshDto {
 	refreshToken: string;
 }
@@ -123,8 +82,20 @@ export interface ResetPasswordLinkDto {
 	newPassword: string;
 }
 
+export interface DocumentDto {
+	id: string;
+	/** @format date-time */
+	createdAt: string;
+	/** @format date-time */
+	updatedAt: string;
+	title: string;
+	content: string | null;
+	userId: string | null;
+	organizationId: string | null;
+}
+
 export interface PaginatedDocumentModel {
-	data: Document[];
+	data: DocumentDto[];
 	meta: PageMetaDto;
 }
 
@@ -144,6 +115,16 @@ export interface UpdateDocumentDto {
 	 */
 	title?: string;
 	content?: string | null;
+}
+
+export interface OrganizationDto {
+	id: string;
+	/** @format date-time */
+	createdAt: string;
+	/** @format date-time */
+	updatedAt: string;
+	title: string;
+	ownerId: string | null;
 }
 
 export interface CreateOrganizationDto {
@@ -307,31 +288,14 @@ export class Api<SecurityDataType extends unknown> {
 		 * No description
 		 *
 		 * @tags Users
-		 * @name UsersControllerGetMe
-		 * @request GET:/api/v1/users/me
-		 * @secure
-		 */
-		usersControllerGetMe: (params: RequestParams = {}) =>
-			this.http.request<User, any>({
-				path: `/api/v1/users/me`,
-				method: 'GET',
-				secure: true,
-				format: 'json',
-				...params,
-			}),
-
-		/**
-		 * No description
-		 *
-		 * @tags Users
 		 * @name UsersControllerGetUsers
-		 * @request GET:/api/v1/users/my
+		 * @request GET:/api/v1/users
 		 * @secure
 		 */
 		usersControllerGetUsers: (
 			query: {
-				/** @default "ASC" */
-				order?: 'ASC' | 'DESC';
+				/** @default "asc" */
+				order?: 'asc' | 'desc';
 				/**
 				 * @min 1
 				 * @default 1
@@ -348,7 +312,7 @@ export class Api<SecurityDataType extends unknown> {
 			params: RequestParams = {},
 		) =>
 			this.http.request<PaginatedUserModel, any>({
-				path: `/api/v1/users/my`,
+				path: `/api/v1/users`,
 				method: 'GET',
 				query: query,
 				secure: true,
@@ -400,10 +364,11 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		authControllerSignOut: (params: RequestParams = {}) =>
-			this.http.request<void, any>({
+			this.http.request<SessionDto, any>({
 				path: `/api/v1/auth/sign-out`,
 				method: 'POST',
 				secure: true,
+				format: 'json',
 				...params,
 			}),
 
@@ -471,6 +436,21 @@ export class Api<SecurityDataType extends unknown> {
 				type: ContentType.Json,
 				...params,
 			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Auth
+		 * @name AuthControllerIdentity
+		 * @request GET:/api/v1/auth/identity
+		 */
+		authControllerIdentity: (params: RequestParams = {}) =>
+			this.http.request<UserDto, any>({
+				path: `/api/v1/auth/identity`,
+				method: 'GET',
+				format: 'json',
+				...params,
+			}),
 	};
 	documents = {
 		/**
@@ -483,8 +463,8 @@ export class Api<SecurityDataType extends unknown> {
 		 */
 		documentsControllerGetMyDocuments: (
 			query: {
-				/** @default "ASC" */
-				order?: 'ASC' | 'DESC';
+				/** @default "asc" */
+				order?: 'asc' | 'desc';
 				/**
 				 * @min 1
 				 * @default 1
@@ -518,7 +498,7 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		documentsControllerCreateDocument: (data: CreateDocumentDto, params: RequestParams = {}) =>
-			this.http.request<Document, any>({
+			this.http.request<DocumentDto, any>({
 				path: `/api/v1/documents`,
 				method: 'POST',
 				body: data,
@@ -537,7 +517,7 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		documentsControllerGetDocument: (id: string, params: RequestParams = {}) =>
-			this.http.request<Document, any>({
+			this.http.request<DocumentDto, any>({
 				path: `/api/v1/documents/${id}`,
 				method: 'GET',
 				secure: true,
@@ -554,7 +534,7 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		documentsControllerDelete: (id: string, params: RequestParams = {}) =>
-			this.http.request<void, any>({
+			this.http.request<any, DocumentDto>({
 				path: `/api/v1/documents/${id}`,
 				method: 'DELETE',
 				secure: true,
@@ -570,7 +550,7 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		documentsControllerPath: (id: string, data: UpdateDocumentDto, params: RequestParams = {}) =>
-			this.http.request<void, any>({
+			this.http.request<any, DocumentDto>({
 				path: `/api/v1/documents/${id}`,
 				method: 'PATCH',
 				body: data,
@@ -589,7 +569,7 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		organizationsControllerGetMy: (params: RequestParams = {}) =>
-			this.http.request<Organization[], any>({
+			this.http.request<OrganizationDto[], any>({
 				path: `/api/v1/organizations/my`,
 				method: 'GET',
 				secure: true,
@@ -606,7 +586,7 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		organizationsControllerGetCurrent: (params: RequestParams = {}) =>
-			this.http.request<Organization, any>({
+			this.http.request<OrganizationDto, any>({
 				path: `/api/v1/organizations/current`,
 				method: 'GET',
 				secure: true,
@@ -655,7 +635,7 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		organizationsControllerCreate: (data: CreateOrganizationDto, params: RequestParams = {}) =>
-			this.http.request<Organization, any>({
+			this.http.request<OrganizationDto, any>({
 				path: `/api/v1/organizations/new`,
 				method: 'POST',
 				body: data,
@@ -674,7 +654,7 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		organizationsControllerDelete: (id: string, params: RequestParams = {}) =>
-			this.http.request<void, any>({
+			this.http.request<any, OrganizationDto>({
 				path: `/api/v1/organizations/${id}`,
 				method: 'DELETE',
 				secure: true,
@@ -690,12 +670,13 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		organizationsControllerAddMember: (data: MemberDto, params: RequestParams = {}) =>
-			this.http.request<void, any>({
+			this.http.request<OrganizationDto, any>({
 				path: `/api/v1/organizations/members`,
 				method: 'POST',
 				body: data,
 				secure: true,
 				type: ContentType.Json,
+				format: 'json',
 				...params,
 			}),
 
@@ -708,7 +689,7 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		organizationsControllerKickMember: (data: MemberDto, params: RequestParams = {}) =>
-			this.http.request<void, any>({
+			this.http.request<any, OrganizationDto>({
 				path: `/api/v1/organizations/members`,
 				method: 'DELETE',
 				body: data,

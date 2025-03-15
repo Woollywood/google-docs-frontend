@@ -56,7 +56,7 @@ export const DocumentsTable: React.FC = () => {
 										</TableCell>
 										<TableCell className='font-medium md:w-[45%]'>{document.title}</TableCell>
 										<TableCell className='text-muted-foreground hidden items-center gap-2 md:flex'>
-											{document.organization ? (
+											{document.organizationId ? (
 												<>
 													<Building2Icon className='size-4' /> Organization
 												</>
