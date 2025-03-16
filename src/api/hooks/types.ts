@@ -5,3 +5,8 @@ export interface LazyQuery {
 export interface SearchQuery {
 	search?: string;
 }
+
+export interface PaginationQuery {
+	order?: 'asc' | 'desc';
+	take?: number;
+}

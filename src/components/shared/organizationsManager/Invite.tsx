@@ -13,20 +13,20 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import { useKickMember } from '@/api/hooks/mutations/organizations';
 import { useGetUsers } from '@/api/hooks/queries/users';
+import { useSendInviteOrganizationMember } from '@/api/hooks/mutations/organizations';
 
 interface Props {
 	organizationId: string;
 }
 
-export const KickMember: React.FC<Props> = ({ organizationId }) => {
-	const { mutateAsync, isPending: isAdding } = useKickMember();
-
+export const Invite: React.FC<Props> = ({ organizationId }) => {
 	const [search, setSearch] = useState('');
-	const { data, isPending, fetchNextPage, hasNextPage, refetch } = useGetUsers({ search, enabled: false });
-	const hasUsers = data?.pages && data.pages.length > 0 && data.pages[0].data.length > 0;
-	const pages = data?.pages;
+	const { data: users, isPending, fetchNextPage, hasNextPage, refetch } = useGetUsers({ search, enabled: false });
+	const hasUsers = users?.pages && users.pages.length > 0 && users.pages[0].data.length > 0;
+	const pages = users?.pages;
+
+	const { mutateAsync: sendInvite, isPending: isInviting } = useSendInviteOrganizationMember();
 
 	useEffect(() => {
 		refetch();
@@ -40,13 +40,13 @@ export const KickMember: React.FC<Props> = ({ organizationId }) => {
 					onClick={(e) => {
 						e.stopPropagation();
 					}}>
-					Kick member
+					Invite
 				</ContextMenuItem>
 			</DialogTrigger>
 			<DialogContent className='sm:max-w-[425px]'>
 				<DialogHeader>
-					<DialogTitle>Kick member</DialogTitle>
-					<DialogDescription>kick member</DialogDescription>
+					<DialogTitle>Invite member</DialogTitle>
+					<DialogDescription>Invite new member</DialogDescription>
 				</DialogHeader>
 				<div>
 					<Input
@@ -73,8 +73,8 @@ export const KickMember: React.FC<Props> = ({ organizationId }) => {
 												variant='ghost'
 												key={id}
 												className='w-full'
-												onClick={() => mutateAsync({ id: organizationId, username })}
-												disabled={isAdding}>
+												onClick={() => sendInvite({ organizationId, recipientId: id })}
+												disabled={isInviting}>
 												{username}
 											</Button>
 										)),

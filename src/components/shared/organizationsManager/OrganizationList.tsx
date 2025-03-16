@@ -6,11 +6,11 @@ import { CreateNew } from './CreateNew';
 import { isObject } from 'lodash-es';
 import { DropdownMenuCheckboxItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { ContextMenu, ContextMenuContent, ContextMenuTrigger } from '@/components/ui/context-menu';
-import { AddMember } from './AddMember';
-import { KickMember } from './KickMember';
+import { Invite } from './Invite';
 import { useJoinOrganization, useLeaveOrganization } from '@/api/hooks/mutations/organizations';
 import { useGetCurrentOrganization } from '@/api/hooks/queries/organizations';
 import { useIdentity } from '@/api/hooks/queries/auth';
+import { Kick } from './Kick';
 
 interface Props {
 	isPending: boolean;
@@ -22,7 +22,7 @@ interface OrganizationItems extends OrganizationDto {
 }
 
 export const OrganizationList: React.FC<Props> = ({ organizations, isPending }) => {
-	const [personalAccountId] = useState(() => uuid());
+	const [personalAccountId] = useState(uuid());
 
 	const { mutateAsync: joinOrganization } = useJoinOrganization();
 	const { mutateAsync: leaveOrganization } = useLeaveOrganization();
@@ -57,19 +57,25 @@ export const OrganizationList: React.FC<Props> = ({ organizations, isPending }) 
 		<ImSpinner8 className='size-8' />
 	) : (
 		<div>
-			{items.map(({ id, title, current }) => (
-				<ContextMenu key={id}>
-					<ContextMenuTrigger>
-						<DropdownMenuCheckboxItem checked={current} onCheckedChange={() => onCheckedChange(id)}>
-							{title}
-						</DropdownMenuCheckboxItem>
-					</ContextMenuTrigger>
-					<ContextMenuContent>
-						<AddMember organizationId={id} />
-						<KickMember organizationId={id} />
-					</ContextMenuContent>
-				</ContextMenu>
-			))}
+			{items.map(({ id, title, current }) =>
+				personalAccountId === id ? (
+					<DropdownMenuCheckboxItem checked={current} onCheckedChange={() => onCheckedChange(id)}>
+						{title}
+					</DropdownMenuCheckboxItem>
+				) : (
+					<ContextMenu key={id}>
+						<ContextMenuTrigger>
+							<DropdownMenuCheckboxItem checked={current} onCheckedChange={() => onCheckedChange(id)}>
+								{title}
+							</DropdownMenuCheckboxItem>
+						</ContextMenuTrigger>
+						<ContextMenuContent>
+							<Invite organizationId={id} />
+							<Kick organizationId={id} />
+						</ContextMenuContent>
+					</ContextMenu>
+				),
+			)}
 			<DropdownMenuSeparator />
 			<CreateNew />
 		</div>

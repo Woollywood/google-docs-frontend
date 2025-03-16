@@ -3,6 +3,7 @@ import { SearchInput } from './SearchInput';
 import { Link } from '@tanstack/react-router';
 import { UserButton } from '../../userButton';
 import { OrganizationsManager } from '../../organizationsManager';
+import { Notifications } from '../../Notifications';
 
 export const Navbar: React.FC = () => {
 	return (
@@ -16,6 +17,7 @@ export const Navbar: React.FC = () => {
 			<SearchInput />
 			<div className='flex items-center gap-8'>
 				<OrganizationsManager />
+				<Notifications />
 				<UserButton />
 			</div>
 		</div>

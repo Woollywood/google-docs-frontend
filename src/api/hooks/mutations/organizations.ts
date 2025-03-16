@@ -2,7 +2,13 @@ import { $api } from '@/api/instance';
 import { ApiLayer } from '@/api/layer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QueryKeys } from '../queryKeys';
-import { CreateOrganizationDto, MemberDto } from '@/api/generatedApi';
+import {
+	AcceptOrganizationInvitationDto,
+	CreateOrganizationDto,
+	KickMemberDto,
+	RejectOrganizationInvitationDto,
+	SendOrganizationNotificationDto,
+} from '@/api/generatedApi';
 
 export const useCreateOrganization = () => {
 	const queryClient = useQueryClient();
@@ -40,14 +46,47 @@ export const useLeaveOrganization = () => {
 	});
 };
 
-export const useAddMember = () => {
+export const useSendInviteOrganizationMember = () => {
 	return useMutation({
-		mutationFn: (dto: MemberDto) => ApiLayer.getDataFrom($api.organizations.organizationsControllerAddMember(dto)),
+		mutationFn: (dto: SendOrganizationNotificationDto) =>
+			ApiLayer.getDataFrom($api.organizations.organizationsControllerSendInvite(dto)),
 	});
 };
 
-export const useKickMember = () => {
+export const useKickOrganizationMember = () => {
+	const queryClient = useQueryClient();
+
 	return useMutation({
-		mutationFn: (dto: MemberDto) => ApiLayer.getDataFrom($api.organizations.organizationsControllerKickMember(dto)),
+		mutationFn: (dto: KickMemberDto) =>
+			ApiLayer.getDataFrom($api.organizations.organizationsControllerKickMember(dto)),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.ORGANIZATION_MEMBERS] });
+		},
+	});
+};
+
+export const useAcceptInviteOrganization = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (dto: AcceptOrganizationInvitationDto) =>
+			ApiLayer.getDataFrom($api.organizations.organizationsControllerAcceptInvite(dto)),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.DOCUMENTS] });
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.ORGANIZATIONS] });
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.NOTIFICATIONS] });
+		},
+	});
+};
+
+export const useRejectInviteOrganization = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (dto: RejectOrganizationInvitationDto) =>
+			ApiLayer.getDataFrom($api.organizations.organizationsControllerRejectInvite(dto)),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.NOTIFICATIONS] });
+		},
 	});
 };

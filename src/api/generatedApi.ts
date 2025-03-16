@@ -131,10 +131,41 @@ export interface CreateOrganizationDto {
 	title: string;
 }
 
-export interface MemberDto {
-	/** organization id */
+export interface SendOrganizationNotificationDto {
+	recipientId?: string;
+	organizationId?: string | null;
+}
+
+export interface NotificationDto {
 	id: string;
-	username: string;
+	/** @format date-time */
+	createdAt: string;
+	/** @format date-time */
+	updatedAt: string;
+	type: NotificationDto;
+	token: string;
+	recipientId: string;
+	senderId: string;
+	organizationId: string | null;
+}
+
+export interface KickMemberDto {
+	organizationId: string;
+	userId: string;
+}
+
+export interface AcceptOrganizationInvitationDto {
+	organizationId?: string | null;
+	token: string;
+}
+
+export interface RejectOrganizationInvitationDto {
+	token: string;
+}
+
+export interface PaginatedNotificationModel {
+	data: NotificationDto[];
+	meta: PageMetaDto;
 }
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from 'axios';
@@ -443,11 +474,13 @@ export class Api<SecurityDataType extends unknown> {
 		 * @tags Auth
 		 * @name AuthControllerIdentity
 		 * @request GET:/api/v1/auth/identity
+		 * @secure
 		 */
 		authControllerIdentity: (params: RequestParams = {}) =>
 			this.http.request<UserDto, any>({
 				path: `/api/v1/auth/identity`,
 				method: 'GET',
+				secure: true,
 				format: 'json',
 				...params,
 			}),
@@ -603,7 +636,7 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		organizationsControllerJoin: (id: string, params: RequestParams = {}) =>
-			this.http.request<void, any>({
+			this.http.request<any, OrganizationDto>({
 				path: `/api/v1/organizations/join/${id}`,
 				method: 'POST',
 				secure: true,
@@ -619,7 +652,7 @@ export class Api<SecurityDataType extends unknown> {
 		 * @secure
 		 */
 		organizationsControllerLeave: (params: RequestParams = {}) =>
-			this.http.request<void, any>({
+			this.http.request<any, OrganizationDto>({
 				path: `/api/v1/organizations/leave`,
 				method: 'POST',
 				secure: true,
@@ -665,17 +698,35 @@ export class Api<SecurityDataType extends unknown> {
 		 * No description
 		 *
 		 * @tags Organizations
-		 * @name OrganizationsControllerAddMember
-		 * @request POST:/api/v1/organizations/members
+		 * @name OrganizationsControllerMembers
+		 * @request GET:/api/v1/organizations/members/{id}
 		 * @secure
 		 */
-		organizationsControllerAddMember: (data: MemberDto, params: RequestParams = {}) =>
-			this.http.request<OrganizationDto, any>({
-				path: `/api/v1/organizations/members`,
-				method: 'POST',
-				body: data,
+		organizationsControllerMembers: (
+			id: string,
+			query: {
+				/** @default "asc" */
+				order?: 'asc' | 'desc';
+				/**
+				 * @min 1
+				 * @default 1
+				 */
+				page?: number;
+				/**
+				 * @min 1
+				 * @max 50
+				 * @default 10
+				 */
+				take?: number;
+				search: string;
+			},
+			params: RequestParams = {},
+		) =>
+			this.http.request<PaginatedUserModel, any>({
+				path: `/api/v1/organizations/members/${id}`,
+				method: 'GET',
+				query: query,
 				secure: true,
-				type: ContentType.Json,
 				format: 'json',
 				...params,
 			}),
@@ -684,17 +735,107 @@ export class Api<SecurityDataType extends unknown> {
 		 * No description
 		 *
 		 * @tags Organizations
-		 * @name OrganizationsControllerKickMember
-		 * @request DELETE:/api/v1/organizations/members
+		 * @name OrganizationsControllerSendInvite
+		 * @request POST:/api/v1/organizations/send-invite
 		 * @secure
 		 */
-		organizationsControllerKickMember: (data: MemberDto, params: RequestParams = {}) =>
-			this.http.request<any, OrganizationDto>({
-				path: `/api/v1/organizations/members`,
-				method: 'DELETE',
+		organizationsControllerSendInvite: (data: SendOrganizationNotificationDto, params: RequestParams = {}) =>
+			this.http.request<any, NotificationDto>({
+				path: `/api/v1/organizations/send-invite`,
+				method: 'POST',
 				body: data,
 				secure: true,
 				type: ContentType.Json,
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerKickMember
+		 * @request POST:/api/v1/organizations/kick
+		 * @secure
+		 */
+		organizationsControllerKickMember: (data: KickMemberDto, params: RequestParams = {}) =>
+			this.http.request<void, any>({
+				path: `/api/v1/organizations/kick`,
+				method: 'POST',
+				body: data,
+				secure: true,
+				type: ContentType.Json,
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerAcceptInvite
+		 * @request POST:/api/v1/organizations/accept-invite
+		 * @secure
+		 */
+		organizationsControllerAcceptInvite: (data: AcceptOrganizationInvitationDto, params: RequestParams = {}) =>
+			this.http.request<any, NotificationDto>({
+				path: `/api/v1/organizations/accept-invite`,
+				method: 'POST',
+				body: data,
+				secure: true,
+				type: ContentType.Json,
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerRejectInvite
+		 * @request POST:/api/v1/organizations/reject-invite
+		 * @secure
+		 */
+		organizationsControllerRejectInvite: (data: RejectOrganizationInvitationDto, params: RequestParams = {}) =>
+			this.http.request<any, NotificationDto>({
+				path: `/api/v1/organizations/reject-invite`,
+				method: 'POST',
+				body: data,
+				secure: true,
+				type: ContentType.Json,
+				...params,
+			}),
+	};
+	notifications = {
+		/**
+		 * No description
+		 *
+		 * @tags Notifications
+		 * @name NotificationsControllerGetAll
+		 * @request GET:/api/v1/notifications
+		 * @secure
+		 */
+		notificationsControllerGetAll: (
+			query?: {
+				/** @default "asc" */
+				order?: 'asc' | 'desc';
+				/**
+				 * @min 1
+				 * @default 1
+				 */
+				page?: number;
+				/**
+				 * @min 1
+				 * @max 50
+				 * @default 10
+				 */
+				take?: number;
+			},
+			params: RequestParams = {},
+		) =>
+			this.http.request<PaginatedNotificationModel, any>({
+				path: `/api/v1/notifications`,
+				method: 'GET',
+				query: query,
+				secure: true,
+				format: 'json',
 				...params,
 			}),
 	};

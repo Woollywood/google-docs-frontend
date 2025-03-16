@@ -13,15 +13,15 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
-import { useAddMember } from '@/api/hooks/mutations/organizations';
 import { useGetUsers } from '@/api/hooks/queries/users';
+import { useKickOrganizationMember } from '@/api/hooks/mutations/organizations';
 
 interface Props {
 	organizationId: string;
 }
 
-export const AddMember: React.FC<Props> = ({ organizationId }) => {
-	const { mutateAsync, isPending: isAdding } = useAddMember();
+export const Kick: React.FC<Props> = ({ organizationId }) => {
+	const { mutateAsync, isPending: isPendingKick } = useKickOrganizationMember();
 
 	const [search, setSearch] = useState('');
 	const { data, isPending, fetchNextPage, hasNextPage, refetch } = useGetUsers({ search, enabled: false });
@@ -40,13 +40,13 @@ export const AddMember: React.FC<Props> = ({ organizationId }) => {
 					onClick={(e) => {
 						e.stopPropagation();
 					}}>
-					Add member
+					Kick member
 				</ContextMenuItem>
 			</DialogTrigger>
 			<DialogContent className='sm:max-w-[425px]'>
 				<DialogHeader>
-					<DialogTitle>Add member</DialogTitle>
-					<DialogDescription>Add new member</DialogDescription>
+					<DialogTitle>Kick member</DialogTitle>
+					<DialogDescription>kick member</DialogDescription>
 				</DialogHeader>
 				<div>
 					<Input
@@ -73,8 +73,8 @@ export const AddMember: React.FC<Props> = ({ organizationId }) => {
 												variant='ghost'
 												key={id}
 												className='w-full'
-												onClick={() => mutateAsync({ id: organizationId, username })}
-												disabled={isAdding}>
+												onClick={() => mutateAsync({ organizationId, userId: id })}
+												disabled={isPendingKick}>
 												{username}
 											</Button>
 										)),
