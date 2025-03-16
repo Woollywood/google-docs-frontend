@@ -49,7 +49,7 @@ export const Notifications: React.FC = () => {
 												size='sm'
 												onClick={() => rejectInvite({ token })}
 												disabled={isPendingReject}>
-												Accept
+												Reject
 											</Button>
 										</div>
 									</div>

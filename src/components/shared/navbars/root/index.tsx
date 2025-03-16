@@ -15,7 +15,7 @@ export const Navbar: React.FC = () => {
 				</Link>
 			</div>
 			<SearchInput />
-			<div className='flex items-center gap-8'>
+			<div className='flex items-center gap-2'>
 				<OrganizationsManager />
 				<Notifications />
 				<UserButton />

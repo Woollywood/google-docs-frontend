@@ -6,8 +6,10 @@ import {
 	AcceptOrganizationInvitationDto,
 	CreateOrganizationDto,
 	KickMemberDto,
+	LeaveOrganizationDto,
 	RejectOrganizationInvitationDto,
 	SendOrganizationNotificationDto,
+	ToggleOrganizationDto,
 } from '@/api/generatedApi';
 
 export const useCreateOrganization = () => {
@@ -22,11 +24,12 @@ export const useCreateOrganization = () => {
 	});
 };
 
-export const useJoinOrganization = () => {
+export const useToggleOrganization = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (id: string) => ApiLayer.getDataFrom($api.organizations.organizationsControllerJoin(id)),
+		mutationFn: (dto: ToggleOrganizationDto) =>
+			ApiLayer.getDataFrom($api.organizations.organizationsControllerToggle(dto)),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.CURRENT_ORGANIZATION] });
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.CURRENT_USER] });
@@ -38,8 +41,11 @@ export const useLeaveOrganization = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: () => ApiLayer.getDataFrom($api.organizations.organizationsControllerLeave()),
+		mutationFn: (dto: LeaveOrganizationDto) =>
+			ApiLayer.getDataFrom($api.organizations.organizationsControllerLeave(dto)),
 		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.DOCUMENTS] });
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.ORGANIZATIONS] });
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.CURRENT_ORGANIZATION] });
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.CURRENT_USER] });
 		},
@@ -47,9 +53,14 @@ export const useLeaveOrganization = () => {
 };
 
 export const useSendInviteOrganizationMember = () => {
+	const queryClient = useQueryClient();
+
 	return useMutation({
 		mutationFn: (dto: SendOrganizationNotificationDto) =>
 			ApiLayer.getDataFrom($api.organizations.organizationsControllerSendInvite(dto)),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.ORGANIZATION_MEMBERS] });
+		},
 	});
 };
 
@@ -87,6 +98,17 @@ export const useRejectInviteOrganization = () => {
 			ApiLayer.getDataFrom($api.organizations.organizationsControllerRejectInvite(dto)),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.NOTIFICATIONS] });
+		},
+	});
+};
+
+export const useDeleteOrganization = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (id: string) => ApiLayer.getDataFrom($api.organizations.organizationsControllerDelete(id)),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.ORGANIZATIONS] });
 		},
 	});
 };

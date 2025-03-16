@@ -19,8 +19,6 @@ export interface UserDto {
 	username: string;
 	email: string;
 	emailVerified: boolean;
-	/** @minLength 3 */
-	password: string;
 	activeOrganizationId: string | null;
 }
 
@@ -127,8 +125,36 @@ export interface OrganizationDto {
 	ownerId: string | null;
 }
 
+export interface ToggleOrganizationDto {
+	id: string | null;
+}
+
+export interface LeaveOrganizationDto {
+	id: string;
+}
+
 export interface CreateOrganizationDto {
 	title: string;
+}
+
+export interface MemberDto {
+	id: string;
+	/** @format date-time */
+	createdAt: string;
+	/** @format date-time */
+	updatedAt: string;
+	/** @minLength 3 */
+	username: string;
+	email: string;
+	emailVerified: boolean;
+	activeOrganizationId: string | null;
+	isMember: boolean;
+	isInvitationSended: boolean;
+}
+
+export interface PaginatedMembersModel {
+	data: MemberDto[];
+	meta: PageMetaDto;
 }
 
 export interface SendOrganizationNotificationDto {
@@ -631,15 +657,50 @@ export class Api<SecurityDataType extends unknown> {
 		 * No description
 		 *
 		 * @tags Organizations
-		 * @name OrganizationsControllerJoin
-		 * @request POST:/api/v1/organizations/join/{id}
+		 * @name OrganizationsControllerGetOrganizationById
+		 * @request GET:/api/v1/organizations/{id}
 		 * @secure
 		 */
-		organizationsControllerJoin: (id: string, params: RequestParams = {}) =>
-			this.http.request<any, OrganizationDto>({
-				path: `/api/v1/organizations/join/${id}`,
-				method: 'POST',
+		organizationsControllerGetOrganizationById: (id: string, params: RequestParams = {}) =>
+			this.http.request<OrganizationDto, any>({
+				path: `/api/v1/organizations/${id}`,
+				method: 'GET',
 				secure: true,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerDelete
+		 * @request DELETE:/api/v1/organizations/{id}
+		 * @secure
+		 */
+		organizationsControllerDelete: (id: string, params: RequestParams = {}) =>
+			this.http.request<any, OrganizationDto>({
+				path: `/api/v1/organizations/${id}`,
+				method: 'DELETE',
+				secure: true,
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Organizations
+		 * @name OrganizationsControllerToggle
+		 * @request POST:/api/v1/organizations/toggle
+		 * @secure
+		 */
+		organizationsControllerToggle: (data: ToggleOrganizationDto, params: RequestParams = {}) =>
+			this.http.request<any, OrganizationDto>({
+				path: `/api/v1/organizations/toggle`,
+				method: 'POST',
+				body: data,
+				secure: true,
+				type: ContentType.Json,
 				...params,
 			}),
 
@@ -651,11 +712,13 @@ export class Api<SecurityDataType extends unknown> {
 		 * @request POST:/api/v1/organizations/leave
 		 * @secure
 		 */
-		organizationsControllerLeave: (params: RequestParams = {}) =>
+		organizationsControllerLeave: (data: LeaveOrganizationDto, params: RequestParams = {}) =>
 			this.http.request<any, OrganizationDto>({
 				path: `/api/v1/organizations/leave`,
 				method: 'POST',
+				body: data,
 				secure: true,
+				type: ContentType.Json,
 				...params,
 			}),
 
@@ -682,27 +745,11 @@ export class Api<SecurityDataType extends unknown> {
 		 * No description
 		 *
 		 * @tags Organizations
-		 * @name OrganizationsControllerDelete
-		 * @request DELETE:/api/v1/organizations/{id}
+		 * @name OrganizationsControllerGetMembers
+		 * @request GET:/api/v1/organizations/{id}/members
 		 * @secure
 		 */
-		organizationsControllerDelete: (id: string, params: RequestParams = {}) =>
-			this.http.request<any, OrganizationDto>({
-				path: `/api/v1/organizations/${id}`,
-				method: 'DELETE',
-				secure: true,
-				...params,
-			}),
-
-		/**
-		 * No description
-		 *
-		 * @tags Organizations
-		 * @name OrganizationsControllerMembers
-		 * @request GET:/api/v1/organizations/members/{id}
-		 * @secure
-		 */
-		organizationsControllerMembers: (
+		organizationsControllerGetMembers: (
 			id: string,
 			query: {
 				/** @default "asc" */
@@ -722,8 +769,8 @@ export class Api<SecurityDataType extends unknown> {
 			},
 			params: RequestParams = {},
 		) =>
-			this.http.request<PaginatedUserModel, any>({
-				path: `/api/v1/organizations/members/${id}`,
+			this.http.request<PaginatedMembersModel, any>({
+				path: `/api/v1/organizations/${id}/members`,
 				method: 'GET',
 				query: query,
 				secure: true,

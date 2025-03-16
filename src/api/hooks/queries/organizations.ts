@@ -19,12 +19,24 @@ export const useGetCurrentOrganization = ({ enabled = true }: LazyQuery = {} as 
 	});
 };
 
-export const useGetOrganizationMembers = (id: string, { search = '' }: SearchQuery = {} as SearchQuery) => {
+export const useGetOrganizationById = (id: string, { enabled = true }: LazyQuery = {} as LazyQuery) => {
+	return useQuery({
+		queryKey: [QueryKeys.ORGANIZATIONS, id],
+		queryFn: () => ApiLayer.getDataFrom($api.organizations.organizationsControllerGetOrganizationById(id)),
+		enabled,
+	});
+};
+
+export const useGetOrganizationMembers = (
+	id: string,
+	{ enabled = true, search = '' }: LazyQuery & SearchQuery = {} as LazyQuery & SearchQuery,
+) => {
 	return useInfiniteQuery({
 		queryKey: [QueryKeys.ORGANIZATION_MEMBERS, id],
 		queryFn: ({ pageParam }) =>
-			ApiLayer.getDataFrom($api.organizations.organizationsControllerMembers(id, { page: pageParam, search })),
+			ApiLayer.getDataFrom($api.organizations.organizationsControllerGetMembers(id, { page: pageParam, search })),
 		initialPageParam: 1,
 		getNextPageParam: (lastPage, _, lastPageParam) => (lastPage.meta.hasNextPage ? lastPageParam + 1 : undefined),
+		enabled,
 	});
 };
