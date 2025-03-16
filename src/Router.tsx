@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { useLocalStorage } from '@uidotdev/usehooks';
 
@@ -7,9 +7,14 @@ import { routeTree } from './routeTree.gen';
 import { Loader2Icon } from 'lucide-react';
 import { AuthTokens } from './services/AuthService';
 import { useIdentity } from './api/hooks/queries/auth';
+import { RouterContext } from './routes/__root';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { useHandleError } from './hooks/useHandleError';
+import { AxiosError } from 'axios';
 
 // Create a new router instance
-const router = createRouter({ routeTree });
+const router = createRouter({ routeTree, context: { queryClient: null } as unknown as RouterContext });
 
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
@@ -18,7 +23,10 @@ declare module '@tanstack/react-router' {
 	}
 }
 
-export const Router: React.FC = () => {
+interface RootProps {
+	queryClient: QueryClient;
+}
+const Root: React.FC<RootProps> = ({ queryClient }) => {
 	const [accessToken] = useLocalStorage<string>(AuthTokens.ACCESS_TOKEN);
 	const [refreshToken] = useLocalStorage<string>(AuthTokens.REFRESH_TOKEN);
 	const [emailVerifyed] = useLocalStorage<boolean>(AuthTokens.EMAIL_VERIFYED, false);
@@ -32,6 +40,50 @@ export const Router: React.FC = () => {
 			<Loader2Icon className='size-16 animate-spin' />
 		</div>
 	) : (
-		<RouterProvider router={router} />
+		<RouterProvider router={router} context={{ queryClient }} />
+	);
+};
+
+export const Router: React.FC = () => {
+	const { handleError } = useHandleError();
+	const queryClient: QueryClient = useMemo(
+		() =>
+			new QueryClient({
+				defaultOptions: {
+					queries: {
+						retry(failureCount, error) {
+							if (error instanceof AxiosError) {
+								if (error.response?.status === 401) {
+									return false;
+								}
+
+								if (error.response?.status === 403) {
+									handleError(error);
+									return false;
+								}
+							}
+
+							return failureCount < 3;
+						},
+					},
+					mutations: {
+						onError(error, variables, context) {
+							if (error instanceof AxiosError) {
+								console.log({ error, variables, context });
+
+								handleError(error);
+							}
+						},
+					},
+				},
+			}),
+		[handleError],
+	);
+
+	return (
+		<QueryClientProvider client={queryClient}>
+			<Root queryClient={queryClient} />
+			<ReactQueryDevtools initialIsOpen={false} />
+		</QueryClientProvider>
 	);
 };

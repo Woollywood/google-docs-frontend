@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { DialogDescription, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { useGetOrganizationById, useGetOrganizationMembers } from '@/api/hooks/queries/organizations';
 import { Button } from '@/components/ui/button';
@@ -14,21 +14,19 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSearchParam } from '@/hooks/useSearchParam';
 import { LeaveOrganizationDto } from '@/api/generatedApi';
+import { AxiosError } from 'axios';
 
-interface Props {
-	id: string;
-}
-
-export const ManagerContent: React.FC<Props> = ({ id }) => {
-	const [, setOrganizationId] = useSearchParam('organizationId');
+export const ManagerContent: React.FC = () => {
+	const [organizationId, setOrganizationId] = useSearchParam('organizationId');
+	const enabled = organizationId.length > 0;
 	const { data: user } = useIdentity({ enabled: false });
-	const { data, isPending } = useGetOrganizationById(id || '', { enabled: id?.length > 0 });
+	const { data, isPending, error } = useGetOrganizationById(organizationId, { enabled });
 	const {
 		data: members,
 		isPending: isPendingMembers,
 		hasNextPage,
 		fetchNextPage,
-	} = useGetOrganizationMembers(id, { enabled: id?.length > 0 });
+	} = useGetOrganizationMembers(organizationId, { enabled });
 	const hasMembers = members?.pages && members.pages.length > 0 && members.pages[0].data.length > 0;
 	const pages = members?.pages;
 	const isOwner = user?.id === data?.ownerId;
@@ -37,6 +35,14 @@ export const ManagerContent: React.FC<Props> = ({ id }) => {
 	const { mutateAsync: kickMember, isPending: isPendingKick } = useKickOrganizationMember();
 	const { mutateAsync: deleteOrganizationAsync, isPending: isPendingDelete } = useDeleteOrganization();
 	const { mutateAsync: leaveOrganizationAsync, isPending: isPendingLeave } = useLeaveOrganization();
+
+	useEffect(() => {
+		if (error instanceof AxiosError) {
+			if (error.response?.status === 403) {
+				setOrganizationId('');
+			}
+		}
+	}, [error, setOrganizationId]);
 
 	const deleteOrganization = async (id: string) => {
 		await deleteOrganizationAsync(id);
@@ -77,7 +83,7 @@ export const ManagerContent: React.FC<Props> = ({ id }) => {
 														variant='secondary'
 														disabled={isMember || isInvitationSended || isPendingInvite}
 														onClick={() =>
-															sendInvite({ organizationId: id, recipientId: userId })
+															sendInvite({ organizationId, recipientId: userId })
 														}>
 														{isInvitationSended ? 'Invitation sended' : 'Invite'}
 													</Button>
@@ -86,7 +92,7 @@ export const ManagerContent: React.FC<Props> = ({ id }) => {
 													<Button
 														variant='secondary'
 														disabled={!isMember || isPendingKick || !isOwner}
-														onClick={() => kickMember({ organizationId: id, userId })}>
+														onClick={() => kickMember({ organizationId, userId })}>
 														Kick
 													</Button>
 												)}
@@ -103,11 +109,11 @@ export const ManagerContent: React.FC<Props> = ({ id }) => {
 
 				<DialogFooter>
 					{isOwner ? (
-						<Button disabled={isPendingDelete} onClick={() => deleteOrganization(id)}>
+						<Button disabled={isPendingDelete} onClick={() => deleteOrganization(organizationId)}>
 							Delete Organization
 						</Button>
 					) : (
-						<Button disabled={isPendingLeave} onClick={() => leaveOrganization({ id })}>
+						<Button disabled={isPendingLeave} onClick={() => leaveOrganization({ id: organizationId })}>
 							Leave from Organization
 						</Button>
 					)}

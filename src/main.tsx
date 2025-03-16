@@ -1,7 +1,6 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Router } from './Router';
-import { QueryClientProvider } from '@/providers/queryClientProvider';
 
 import './assets/tailwind.css';
 
@@ -10,9 +9,7 @@ if (!rootElement.innerHTML) {
 	const root = ReactDOM.createRoot(rootElement);
 	root.render(
 		<StrictMode>
-			<QueryClientProvider>
-				<Router />
-			</QueryClientProvider>
+			<Router />
 		</StrictMode>,
 	);
 }

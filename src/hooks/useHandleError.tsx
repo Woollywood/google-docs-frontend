@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export const useHandleError = () => {
@@ -17,9 +17,9 @@ export const useHandleError = () => {
 		}
 	}, [error]);
 
-	const handleError = (error: unknown) => {
+	const handleError = useCallback((error: unknown) => {
 		setError(error);
-	};
+	}, []);
 
 	return { handleError };
 };

@@ -1,12 +1,11 @@
 import { UserDto } from '@/api/generatedApi';
 import { QueryKeys } from '@/api/hooks/queryKeys';
-import { queryClient } from '@/lib/tanstackQuery';
 import { AuthService } from '@/services/AuthService';
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_unauthenticated')({
 	component: RouteComponent,
-	beforeLoad: () => {
+	beforeLoad: ({ context: { queryClient } }) => {
 		const userData =
 			AuthService.checkTokens() && AuthService.emailVerifyed()
 				? (queryClient.getQueryData([QueryKeys.CURRENT_USER]) as UserDto | null)

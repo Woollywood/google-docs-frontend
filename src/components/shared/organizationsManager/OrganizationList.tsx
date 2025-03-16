@@ -5,12 +5,9 @@ import { ImSpinner8 } from 'react-icons/im';
 import { CreateNew } from './CreateNew';
 import { isObject } from 'lodash-es';
 import { DropdownMenuCheckboxItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { ContextMenu, ContextMenuContent, ContextMenuTrigger } from '@/components/ui/context-menu';
-import { Invite } from './Invite';
 import { useToggleOrganization } from '@/api/hooks/mutations/organizations';
 import { useGetCurrentOrganization } from '@/api/hooks/queries/organizations';
 import { useIdentity } from '@/api/hooks/queries/auth';
-import { Kick } from './Kick';
 import { IoIosSettings } from 'react-icons/io';
 import { Button } from '@/components/ui/button';
 import { DialogTrigger } from '@/components/ui/dialog';
@@ -97,22 +94,14 @@ export const OrganizationList: React.FC<Props> = ({ organizations, isPending }) 
 						title={title}
 					/>
 				) : (
-					<ContextMenu key={id}>
-						<ContextMenuTrigger>
-							<OrganizationItem
-								key={id}
-								canManage
-								id={id}
-								current={current}
-								onCheckedChange={() => onCheckedChange(id)}
-								title={title}
-							/>
-						</ContextMenuTrigger>
-						<ContextMenuContent>
-							<Invite organizationId={id} />
-							<Kick organizationId={id} />
-						</ContextMenuContent>
-					</ContextMenu>
+					<OrganizationItem
+						key={id}
+						canManage
+						id={id}
+						current={current}
+						onCheckedChange={() => onCheckedChange(id)}
+						title={title}
+					/>
 				),
 			)}
 			<DropdownMenuSeparator />
