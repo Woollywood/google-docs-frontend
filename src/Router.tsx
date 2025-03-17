@@ -4,7 +4,6 @@ import { useLocalStorage } from '@uidotdev/usehooks';
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
-import { Loader2Icon } from 'lucide-react';
 import { AuthTokens } from './services/AuthService';
 import { useIdentity } from './api/hooks/queries/auth';
 import { RouterContext } from './routes/__root';
@@ -12,6 +11,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useHandleError } from './hooks/useHandleError';
 import { AxiosError } from 'axios';
+import { GlobalSpinner } from './components/shared/spinners/GlobalSpinner';
 
 // Create a new router instance
 const router = createRouter({ routeTree, context: { queryClient: null } as unknown as RouterContext });
@@ -35,13 +35,7 @@ const Root: React.FC<RootProps> = ({ queryClient }) => {
 	const { isPending, isFetching } = useIdentity({ enabled });
 	const isLoading = isPending && isFetching;
 
-	return isLoading ? (
-		<div className='flex size-full min-h-screen items-center justify-center'>
-			<Loader2Icon className='size-16 animate-spin' />
-		</div>
-	) : (
-		<RouterProvider router={router} context={{ queryClient }} />
-	);
+	return isLoading ? <GlobalSpinner /> : <RouterProvider router={router} context={{ queryClient }} />;
 };
 
 export const Router: React.FC = () => {
@@ -67,10 +61,8 @@ export const Router: React.FC = () => {
 						},
 					},
 					mutations: {
-						onError(error, variables, context) {
+						onError(error) {
 							if (error instanceof AxiosError) {
-								console.log({ error, variables, context });
-
 								handleError(error);
 							}
 						},

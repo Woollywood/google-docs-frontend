@@ -59,7 +59,12 @@ export const SectionsProvider: React.FC<React.PropsWithChildren> = ({ children }
 			},
 		],
 		[
-			{ label: 'Comment', icon: MessageSquareIcon, isActive: false, onClick: () => console.log('Todo comment') },
+			{
+				label: 'Comment',
+				icon: MessageSquareIcon,
+				onClick: () => editorStore.editor?.chain().focus().addPendingComment().run(),
+				isActive: editorStore.editor?.isActive('liveblocksCommentMark'),
+			},
 			{
 				label: 'List Todo',
 				icon: ListTodoIcon,

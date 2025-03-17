@@ -43,8 +43,10 @@ export const Toolbar: React.FC = observer(() => {
 			<AlignButton />
 			<LineHeightButton />
 			<ListButton />
-			{sections[2].map((section) => (
-				<ToolbarButton key={section.label} {...section} />
+			{sections[2].map(({ icon: Icon, ...props }) => (
+				<ToolbarButton key={props.label} {...props}>
+					<Icon className='size-4' />
+				</ToolbarButton>
 			))}
 			<Separator orientation='vertical' className='h-6 bg-neutral-300' />
 		</div>

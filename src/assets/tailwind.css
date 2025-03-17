@@ -44,6 +44,7 @@
 	--editor-toolbar-background: 241 244 249;
 
 	--editor-width: 52.25rem;
+	--editor-min-height: 67.5rem;
 }
 
 .dark {
@@ -126,6 +127,7 @@
 	--color-editor-toolbar-background: var(--editor-toolbar-background);
 
 	--spacing-editor-width: var(--editor-width);
+	--spacing-editor-min-height: var(--editor-min-height);
 
 	@keyframes accordion-down {
 		from {
@@ -320,11 +322,33 @@
 	}
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
+.floating-threads {
+	display: none;
+}
+
+.anchored-threads {
+	display: block;
+	max-width: 300px;
+	width: 100%;
+	position: absolute;
+	right: 12px;
+}
+
+@media (max-width: 640px) {
+	.floating-threads {
+		display: block;
 	}
-  body {
-    @apply bg-background text-foreground;
+
+	.anchored-threads {
+		display: none;
+	}
+}
+
+@layer base {
+	* {
+		@apply border-border outline-ring/50;
+	}
+	body {
+		@apply bg-background text-foreground;
 	}
 }
