@@ -17,9 +17,10 @@ export const useGetDocuments = (
 	});
 };
 
-export const useGetDocumentById = (id: string) => {
+export const useGetDocumentById = (id: string, { enabled = true }: LazyQuery = {} as LazyQuery) => {
 	return useQuery({
 		queryKey: [QueryKeys.DOCUMENTS, id],
 		queryFn: () => ApiLayer.getDataFrom($api.documents.documentsControllerGetDocument(id)),
+		enabled,
 	});
 };

@@ -115,6 +115,20 @@ export interface UpdateDocumentDto {
 	content?: string | null;
 }
 
+export interface IdentifyUserDto {
+	token: string;
+}
+
+export interface RoomDto {
+	id: string;
+	/** @format date-time */
+	createdAt: string;
+	/** @format date-time */
+	updatedAt: string;
+	title: string;
+	documentId: string;
+}
+
 export interface OrganizationDto {
 	id: string;
 	/** @format date-time */
@@ -553,12 +567,12 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Documents
 		 * @name DocumentsControllerCreateDocument
-		 * @request POST:/api/v1/documents
+		 * @request POST:/api/v1/documents/create
 		 * @secure
 		 */
 		documentsControllerCreateDocument: (data: CreateDocumentDto, params: RequestParams = {}) =>
 			this.http.request<DocumentDto, any>({
-				path: `/api/v1/documents`,
+				path: `/api/v1/documents/create`,
 				method: 'POST',
 				body: data,
 				secure: true,
@@ -615,6 +629,58 @@ export class Api<SecurityDataType extends unknown> {
 				body: data,
 				secure: true,
 				type: ContentType.Json,
+				...params,
+			}),
+	};
+	liveblocks = {
+		/**
+		 * No description
+		 *
+		 * @tags Liveblocks
+		 * @name LiveblocksControllerIdentifyUser
+		 * @request POST:/api/v1/liveblocks/rooms/identify
+		 * @secure
+		 */
+		liveblocksControllerIdentifyUser: (params: RequestParams = {}) =>
+			this.http.request<IdentifyUserDto, any>({
+				path: `/api/v1/liveblocks/rooms/identify`,
+				method: 'POST',
+				secure: true,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Liveblocks
+		 * @name LiveblocksControllerGetRoomByDocumentId
+		 * @request GET:/api/v1/liveblocks/rooms/{documentId}
+		 * @secure
+		 */
+		liveblocksControllerGetRoomByDocumentId: (documentId: string, params: RequestParams = {}) =>
+			this.http.request<RoomDto, any>({
+				path: `/api/v1/liveblocks/rooms/${documentId}`,
+				method: 'GET',
+				secure: true,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Liveblocks
+		 * @name LiveblocksControllerEnterRoom
+		 * @request POST:/api/v1/liveblocks/rooms/enter/{id}
+		 * @secure
+		 */
+		liveblocksControllerEnterRoom: (id: string, params: RequestParams = {}) =>
+			this.http.request<RoomDto, any>({
+				path: `/api/v1/liveblocks/rooms/enter/${id}`,
+				method: 'POST',
+				secure: true,
+				format: 'json',
 				...params,
 			}),
 	};

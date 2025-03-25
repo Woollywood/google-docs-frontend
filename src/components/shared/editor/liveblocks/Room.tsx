@@ -1,7 +1,6 @@
 import React from 'react';
 import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from '@liveblocks/react/suspense';
-
-const publicApiKey = import.meta.env.VITE_LIVEBLOCKS_PUBLIC_API_KEY;
+import { authEndpoint } from '@/lib/liveblocks';
 
 interface Props extends React.PropsWithChildren {
 	id: string;
@@ -10,7 +9,7 @@ interface Props extends React.PropsWithChildren {
 
 export const Room: React.FC<Props> = ({ id, fallback, children }) => {
 	return (
-		<LiveblocksProvider publicApiKey={publicApiKey}>
+		<LiveblocksProvider throttle={16} authEndpoint={authEndpoint}>
 			<RoomProvider id={id}>
 				<ClientSideSuspense fallback={fallback}>{children}</ClientSideSuspense>
 			</RoomProvider>

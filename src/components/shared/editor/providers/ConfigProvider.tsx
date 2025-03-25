@@ -26,7 +26,7 @@ type ContextType = UseEditorOptions;
 const Context = React.createContext({} as ContextType);
 
 export const ConfigProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
-	const liveblocks = useLiveblocksExtension();
+	const liveblocks = useLiveblocksExtension({ offlineSupport_experimental: true });
 
 	const editor: UseEditorOptions = {
 		extensions: [

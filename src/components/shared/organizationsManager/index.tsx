@@ -46,7 +46,7 @@ export const OrganizationsManager: React.FC = () => {
 					<OrganizationList organizations={organizations || []} isPending={isPendingOrganizations} />
 				</DropdownMenuContent>
 			</DropdownMenu>
-			<ManagerContent id={organizationId} />
+			<ManagerContent />
 		</Dialog>
 	);
 };

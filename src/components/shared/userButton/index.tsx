@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SignOut } from './SignOut';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Link } from '@tanstack/react-router';
 
 export const UserButton: React.FC = () => {
 	return (
@@ -27,10 +28,12 @@ export const UserButton: React.FC = () => {
 				<DropdownMenuLabel>My Account</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<DropdownMenuGroup>
-					<DropdownMenuItem>
-						<User />
-						<span>Profile</span>
-						<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+					<DropdownMenuItem asChild>
+						<Link to='/profile'>
+							<User />
+							<span>Profile</span>
+							<DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+						</Link>
 					</DropdownMenuItem>
 					<DropdownMenuItem>
 						<CreditCard />
