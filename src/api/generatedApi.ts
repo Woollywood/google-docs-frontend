@@ -129,6 +129,11 @@ export interface RoomDto {
 	documentId: string;
 }
 
+export interface ResolvedUsersDto {
+	name?: string;
+	avatar?: string;
+}
+
 export interface OrganizationDto {
 	id: string;
 	/** @format date-time */
@@ -359,11 +364,11 @@ export class Api<SecurityDataType extends unknown> {
 		 * No description
 		 *
 		 * @tags Users
-		 * @name UsersControllerGetUsers
+		 * @name UsersControllerFindUsers
 		 * @request GET:/api/v1/users
 		 * @secure
 		 */
-		usersControllerGetUsers: (
+		usersControllerFindUsers: (
 			query: {
 				/** @default "asc" */
 				order?: 'asc' | 'desc';
@@ -655,13 +660,60 @@ export class Api<SecurityDataType extends unknown> {
 		 *
 		 * @tags Liveblocks
 		 * @name LiveblocksControllerGetRoomByDocumentId
-		 * @request GET:/api/v1/liveblocks/rooms/{documentId}
+		 * @request GET:/api/v1/liveblocks/rooms/by-document-id/{documentId}
 		 * @secure
 		 */
 		liveblocksControllerGetRoomByDocumentId: (documentId: string, params: RequestParams = {}) =>
 			this.http.request<RoomDto, any>({
-				path: `/api/v1/liveblocks/rooms/${documentId}`,
+				path: `/api/v1/liveblocks/rooms/by-document-id/${documentId}`,
 				method: 'GET',
+				secure: true,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Liveblocks
+		 * @name LiveblocksControllerResolveUsers
+		 * @request GET:/api/v1/liveblocks/rooms/resolve-users
+		 * @secure
+		 */
+		liveblocksControllerResolveUsers: (
+			query: {
+				ids: string[];
+			},
+			params: RequestParams = {},
+		) =>
+			this.http.request<ResolvedUsersDto[], any>({
+				path: `/api/v1/liveblocks/rooms/resolve-users`,
+				method: 'GET',
+				query: query,
+				secure: true,
+				format: 'json',
+				...params,
+			}),
+
+		/**
+		 * No description
+		 *
+		 * @tags Liveblocks
+		 * @name LiveblocksControllerGetMentionSuggestions
+		 * @request GET:/api/v1/liveblocks/rooms/mention-suggestions/{roomId}
+		 * @secure
+		 */
+		liveblocksControllerGetMentionSuggestions: (
+			roomId: string,
+			query: {
+				text: string;
+			},
+			params: RequestParams = {},
+		) =>
+			this.http.request<string[], any>({
+				path: `/api/v1/liveblocks/rooms/mention-suggestions/${roomId}`,
+				method: 'GET',
+				query: query,
 				secure: true,
 				format: 'json',
 				...params,

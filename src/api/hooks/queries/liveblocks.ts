@@ -5,7 +5,7 @@ import { $api } from '@/api/instance';
 
 export const useGetRoomByDocumentId = (id: string) => {
 	return useQuery({
-		queryKey: [QueryKeys.ROOMS],
+		queryKey: [QueryKeys.ROOMS, id],
 		queryFn: () => ApiLayer.getDataFrom($api.liveblocks.liveblocksControllerGetRoomByDocumentId(id)),
 	});
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { LiveblocksProvider, RoomProvider, ClientSideSuspense } from '@liveblocks/react/suspense';
-import { authEndpoint } from '@/lib/liveblocks';
+import { authEndpoint, resolveMentionSuggestions, resolveUsers } from '@/lib/liveblocks';
 
 interface Props extends React.PropsWithChildren {
 	id: string;
@@ -9,7 +9,10 @@ interface Props extends React.PropsWithChildren {
 
 export const Room: React.FC<Props> = ({ id, fallback, children }) => {
 	return (
-		<LiveblocksProvider throttle={16} authEndpoint={authEndpoint}>
+		<LiveblocksProvider
+			authEndpoint={authEndpoint}
+			resolveUsers={resolveUsers}
+			resolveMentionSuggestions={resolveMentionSuggestions}>
 			<RoomProvider id={id}>
 				<ClientSideSuspense fallback={fallback}>{children}</ClientSideSuspense>
 			</RoomProvider>

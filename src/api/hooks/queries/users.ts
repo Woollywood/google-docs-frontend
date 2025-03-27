@@ -9,7 +9,7 @@ export const useGetUsers = (
 	return useInfiniteQuery({
 		queryKey: [QueryKeys.USERS],
 		queryFn: ({ pageParam }) =>
-			ApiLayer.getDataFrom($api.users.usersControllerGetUsers({ page: pageParam, search })),
+			ApiLayer.getDataFrom($api.users.usersControllerFindUsers({ page: pageParam, search })),
 		initialPageParam: 1,
 		getNextPageParam: (lastPage, _, lastPageParam) => (lastPage.meta.hasNextPage ? lastPageParam + 1 : undefined),
 		enabled,

@@ -1,10 +1,14 @@
 import { AxiosError } from 'axios';
 import { AuthService } from '@/services/AuthService';
 import { Api, HttpClient } from './generatedApi';
+import qs from 'qs';
 
 const baseURL = import.meta.env.VITE_BASE_BACKEND_URL;
 
-const httpClient = new HttpClient({ baseURL });
+const httpClient = new HttpClient({
+	baseURL,
+	paramsSerializer: (params) => qs.stringify(params, { arrayFormat: 'repeat' }),
+});
 
 let refreshPromise: ReturnType<typeof $api.auth.authControllerRefresh> | null = null;
 
