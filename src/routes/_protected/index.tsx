@@ -1,6 +1,6 @@
 import { DocumentsTable } from '@/components/shared/documents/DocumentsTable';
 import { TemplatesGallery } from '@/components/shared/documents/TemplatesGallery';
-import { Navbar } from '@/components/shared/navbars/root';
+import { DocumentsNavbar } from '@/components/shared/navbars/DocumentsNavbar';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/_protected/')({
@@ -10,7 +10,7 @@ export const Route = createFileRoute('/_protected/')({
 function Index() {
 	return (
 		<div className='grid h-full grid-rows-[auto_1fr] gap-6'>
-			<Navbar />
+			<DocumentsNavbar />
 			<TemplatesGallery />
 			<DocumentsTable />
 		</div>

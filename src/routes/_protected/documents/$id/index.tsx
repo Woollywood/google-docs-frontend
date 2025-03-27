@@ -1,11 +1,11 @@
 import { useGetDocumentById } from '@/api/hooks/queries/documents';
 import { Editor } from '@/components/shared/editor';
-import { Navbar } from '@/components/shared/navbars/document';
 import { createFileRoute } from '@tanstack/react-router';
 import { GlobalSpinner } from '@/components/shared/spinners/GlobalSpinner';
 import { useGetRoomByDocumentId } from '@/api/hooks/queries/liveblocks';
 import { useEffect } from 'react';
 import { useEnterRoom } from '@/api/hooks/mutations/liveblocks';
+import { DocumentNavbar } from '@/components/shared/navbars/DocumentNavbar';
 
 export const Route = createFileRoute('/_protected/documents/$id/')({
 	component: RouteComponent,
@@ -38,7 +38,7 @@ function RouteComponent() {
 
 	return (
 		<div className='grid h-full min-h-screen grid-rows-[auto_1fr] gap-y-8'>
-			<Navbar />
+			<DocumentNavbar />
 			{isError ? renderError() : renderContent()}
 		</div>
 	);

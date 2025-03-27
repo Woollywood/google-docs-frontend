@@ -44,9 +44,9 @@ const OrganizationItem: React.FC<{
 			<span className='whitespace-nowrap'>{title}</span>
 			{canManage && (
 				<DialogTrigger asChild>
-					<Button variant='secondary' onClick={onClick}>
-						<IoIosSettings className='fill-muted-foreground size-4' />
-						<span className='text-muted-foreground text-sm font-medium'>Manage</span>
+					<Button className='z-10' onClick={onClick}>
+						<IoIosSettings className='fill-background size-4' />
+						<span className='text-background text-sm font-medium'>Manage</span>
 					</Button>
 				</DialogTrigger>
 			)}
