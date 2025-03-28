@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from '@tanstack/react-router';
-import { OrganizationsManager } from '../organizationsManager';
-import { Notifications } from '../Notifications';
 import { UserButton } from '../userButton';
 import { cn } from '@/lib/utils';
+import { Organizations } from './components/organizations';
 
 interface Props {
 	logoTitle?: string;
@@ -25,8 +24,7 @@ export const RootNavbar: React.FC<Props & React.PropsWithChildren & React.HTMLAt
 			</div>
 			{children}
 			<div className='flex items-center gap-2'>
-				<OrganizationsManager />
-				<Notifications />
+				<Organizations />
 				<UserButton />
 			</div>
 		</div>

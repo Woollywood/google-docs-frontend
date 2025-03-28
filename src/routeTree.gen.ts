@@ -17,7 +17,9 @@ import { Route as UnauthenticatedImport } from './routes/_unauthenticated'
 import { Route as ProtectedImport } from './routes/_protected'
 import { Route as ProtectedIndexImport } from './routes/_protected/index'
 import { Route as ProtectedProfileImport } from './routes/_protected/profile'
+import { Route as ProtectedOrganizationsIndexImport } from './routes/_protected/organizations/index'
 import { Route as UnauthenticatedAuthLayoutImport } from './routes/_unauthenticated/auth/_layout'
+import { Route as ProtectedOrganizationsIdIndexImport } from './routes/_protected/organizations/$id/index'
 import { Route as ProtectedDocumentsIdIndexImport } from './routes/_protected/documents/$id/index'
 import { Route as UnauthenticatedAuthLayoutSignUpImport } from './routes/_unauthenticated/auth/_layout/sign-up'
 import { Route as UnauthenticatedAuthLayoutSignInImport } from './routes/_unauthenticated/auth/_layout/sign-in'
@@ -60,10 +62,24 @@ const ProtectedProfileRoute = ProtectedProfileImport.update({
   getParentRoute: () => ProtectedRoute,
 } as any)
 
+const ProtectedOrganizationsIndexRoute =
+  ProtectedOrganizationsIndexImport.update({
+    id: '/organizations/',
+    path: '/organizations/',
+    getParentRoute: () => ProtectedRoute,
+  } as any)
+
 const UnauthenticatedAuthLayoutRoute = UnauthenticatedAuthLayoutImport.update({
   id: '/_layout',
   getParentRoute: () => UnauthenticatedAuthRoute,
 } as any)
+
+const ProtectedOrganizationsIdIndexRoute =
+  ProtectedOrganizationsIdIndexImport.update({
+    id: '/organizations/$id/',
+    path: '/organizations/$id/',
+    getParentRoute: () => ProtectedRoute,
+  } as any)
 
 const ProtectedDocumentsIdIndexRoute = ProtectedDocumentsIdIndexImport.update({
   id: '/documents/$id/',
@@ -159,6 +175,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UnauthenticatedAuthLayoutImport
       parentRoute: typeof UnauthenticatedAuthRoute
     }
+    '/_protected/organizations/': {
+      id: '/_protected/organizations/'
+      path: '/organizations'
+      fullPath: '/organizations'
+      preLoaderRoute: typeof ProtectedOrganizationsIndexImport
+      parentRoute: typeof ProtectedImport
+    }
     '/_unauthenticated/auth/_layout/email-verification': {
       id: '/_unauthenticated/auth/_layout/email-verification'
       path: '/email-verification'
@@ -208,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedDocumentsIdIndexImport
       parentRoute: typeof ProtectedImport
     }
+    '/_protected/organizations/$id/': {
+      id: '/_protected/organizations/$id/'
+      path: '/organizations/$id'
+      fullPath: '/organizations/$id'
+      preLoaderRoute: typeof ProtectedOrganizationsIdIndexImport
+      parentRoute: typeof ProtectedImport
+    }
   }
 }
 
@@ -216,13 +246,17 @@ declare module '@tanstack/react-router' {
 interface ProtectedRouteChildren {
   ProtectedProfileRoute: typeof ProtectedProfileRoute
   ProtectedIndexRoute: typeof ProtectedIndexRoute
+  ProtectedOrganizationsIndexRoute: typeof ProtectedOrganizationsIndexRoute
   ProtectedDocumentsIdIndexRoute: typeof ProtectedDocumentsIdIndexRoute
+  ProtectedOrganizationsIdIndexRoute: typeof ProtectedOrganizationsIdIndexRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
   ProtectedProfileRoute: ProtectedProfileRoute,
   ProtectedIndexRoute: ProtectedIndexRoute,
+  ProtectedOrganizationsIndexRoute: ProtectedOrganizationsIndexRoute,
   ProtectedDocumentsIdIndexRoute: ProtectedDocumentsIdIndexRoute,
+  ProtectedOrganizationsIdIndexRoute: ProtectedOrganizationsIdIndexRoute,
 }
 
 const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
@@ -285,6 +319,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProtectedProfileRoute
   '/': typeof ProtectedIndexRoute
   '/auth': typeof UnauthenticatedAuthLayoutRouteWithChildren
+  '/organizations': typeof ProtectedOrganizationsIndexRoute
   '/auth/email-verification': typeof UnauthenticatedAuthLayoutEmailVerificationRoute
   '/auth/email-verified': typeof UnauthenticatedAuthLayoutEmailVerifiedRoute
   '/auth/forgot-password': typeof UnauthenticatedAuthLayoutForgotPasswordRoute
@@ -292,6 +327,7 @@ export interface FileRoutesByFullPath {
   '/auth/sign-in': typeof UnauthenticatedAuthLayoutSignInRoute
   '/auth/sign-up': typeof UnauthenticatedAuthLayoutSignUpRoute
   '/documents/$id': typeof ProtectedDocumentsIdIndexRoute
+  '/organizations/$id': typeof ProtectedOrganizationsIdIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -299,6 +335,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProtectedProfileRoute
   '/': typeof ProtectedIndexRoute
   '/auth': typeof UnauthenticatedAuthLayoutRouteWithChildren
+  '/organizations': typeof ProtectedOrganizationsIndexRoute
   '/auth/email-verification': typeof UnauthenticatedAuthLayoutEmailVerificationRoute
   '/auth/email-verified': typeof UnauthenticatedAuthLayoutEmailVerifiedRoute
   '/auth/forgot-password': typeof UnauthenticatedAuthLayoutForgotPasswordRoute
@@ -306,6 +343,7 @@ export interface FileRoutesByTo {
   '/auth/sign-in': typeof UnauthenticatedAuthLayoutSignInRoute
   '/auth/sign-up': typeof UnauthenticatedAuthLayoutSignUpRoute
   '/documents/$id': typeof ProtectedDocumentsIdIndexRoute
+  '/organizations/$id': typeof ProtectedOrganizationsIdIndexRoute
 }
 
 export interface FileRoutesById {
@@ -316,6 +354,7 @@ export interface FileRoutesById {
   '/_protected/': typeof ProtectedIndexRoute
   '/_unauthenticated/auth': typeof UnauthenticatedAuthRouteWithChildren
   '/_unauthenticated/auth/_layout': typeof UnauthenticatedAuthLayoutRouteWithChildren
+  '/_protected/organizations/': typeof ProtectedOrganizationsIndexRoute
   '/_unauthenticated/auth/_layout/email-verification': typeof UnauthenticatedAuthLayoutEmailVerificationRoute
   '/_unauthenticated/auth/_layout/email-verified': typeof UnauthenticatedAuthLayoutEmailVerifiedRoute
   '/_unauthenticated/auth/_layout/forgot-password': typeof UnauthenticatedAuthLayoutForgotPasswordRoute
@@ -323,6 +362,7 @@ export interface FileRoutesById {
   '/_unauthenticated/auth/_layout/sign-in': typeof UnauthenticatedAuthLayoutSignInRoute
   '/_unauthenticated/auth/_layout/sign-up': typeof UnauthenticatedAuthLayoutSignUpRoute
   '/_protected/documents/$id/': typeof ProtectedDocumentsIdIndexRoute
+  '/_protected/organizations/$id/': typeof ProtectedOrganizationsIdIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -332,6 +372,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/'
     | '/auth'
+    | '/organizations'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -339,12 +380,14 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/documents/$id'
+    | '/organizations/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
     | '/profile'
     | '/'
     | '/auth'
+    | '/organizations'
     | '/auth/email-verification'
     | '/auth/email-verified'
     | '/auth/forgot-password'
@@ -352,6 +395,7 @@ export interface FileRouteTypes {
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/documents/$id'
+    | '/organizations/$id'
   id:
     | '__root__'
     | '/_protected'
@@ -360,6 +404,7 @@ export interface FileRouteTypes {
     | '/_protected/'
     | '/_unauthenticated/auth'
     | '/_unauthenticated/auth/_layout'
+    | '/_protected/organizations/'
     | '/_unauthenticated/auth/_layout/email-verification'
     | '/_unauthenticated/auth/_layout/email-verified'
     | '/_unauthenticated/auth/_layout/forgot-password'
@@ -367,6 +412,7 @@ export interface FileRouteTypes {
     | '/_unauthenticated/auth/_layout/sign-in'
     | '/_unauthenticated/auth/_layout/sign-up'
     | '/_protected/documents/$id/'
+    | '/_protected/organizations/$id/'
   fileRoutesById: FileRoutesById
 }
 
@@ -399,7 +445,9 @@ export const routeTree = rootRoute
       "children": [
         "/_protected/profile",
         "/_protected/",
-        "/_protected/documents/$id/"
+        "/_protected/organizations/",
+        "/_protected/documents/$id/",
+        "/_protected/organizations/$id/"
       ]
     },
     "/_unauthenticated": {
@@ -435,6 +483,10 @@ export const routeTree = rootRoute
         "/_unauthenticated/auth/_layout/sign-up"
       ]
     },
+    "/_protected/organizations/": {
+      "filePath": "_protected/organizations/index.tsx",
+      "parent": "/_protected"
+    },
     "/_unauthenticated/auth/_layout/email-verification": {
       "filePath": "_unauthenticated/auth/_layout/email-verification.tsx",
       "parent": "/_unauthenticated/auth/_layout"
@@ -461,6 +513,10 @@ export const routeTree = rootRoute
     },
     "/_protected/documents/$id/": {
       "filePath": "_protected/documents/$id/index.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/organizations/$id/": {
+      "filePath": "_protected/organizations/$id/index.tsx",
       "parent": "/_protected"
     }
   }

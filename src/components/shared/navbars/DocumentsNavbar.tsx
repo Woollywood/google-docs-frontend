@@ -5,7 +5,7 @@ import { SearchInput } from './components/SearchInput';
 export const DocumentsNavbar: React.FC = () => {
 	return (
 		<RootNavbar logoTitle='Docs'>
-			<SearchInput />
+			<SearchInput className='justify-start' />
 		</RootNavbar>
 	);
 };

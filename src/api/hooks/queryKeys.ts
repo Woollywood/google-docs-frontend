@@ -6,5 +6,6 @@ export enum QueryKeys {
 	CURRENT_ORGANIZATION = 'currentOrganization',
 	ORGANIZATION_MEMBERS = 'organizationMembers',
 	NOTIFICATIONS = 'notifications',
+	NOTIFICATIONS_COUNT = 'notificationsCount',
 	ROOMS = 'rooms',
 }

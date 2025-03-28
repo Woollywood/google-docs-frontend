@@ -191,7 +191,9 @@ export interface NotificationDto {
 	token: string;
 	recipientId: string;
 	senderId: string;
+	sender: UserDto;
 	organizationId: string | null;
+	organization: OrganizationDto;
 }
 
 export interface KickMemberDto {

@@ -86,6 +86,7 @@ export const useAcceptInviteOrganization = () => {
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.DOCUMENTS] });
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.ORGANIZATIONS] });
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.NOTIFICATIONS] });
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.NOTIFICATIONS_COUNT] });
 		},
 	});
 };
@@ -98,6 +99,7 @@ export const useRejectInviteOrganization = () => {
 			ApiLayer.getDataFrom($api.organizations.organizationsControllerRejectInvite(dto)),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: [QueryKeys.NOTIFICATIONS] });
+			queryClient.invalidateQueries({ queryKey: [QueryKeys.NOTIFICATIONS_COUNT] });
 		},
 	});
 };

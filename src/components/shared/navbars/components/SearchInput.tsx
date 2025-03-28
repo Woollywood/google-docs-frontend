@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useSearchParam } from '@/hooks/useSearchParam';
+import { cn } from '@/lib/utils';
 import { SearchIcon, XIcon } from 'lucide-react';
 import React, { useRef, useState } from 'react';
 
-export const SearchInput: React.FC = () => {
+export const SearchInput: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => {
 	const [search, setSearch] = useSearchParam('search');
 	const [value, setValue] = useState(search);
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -22,7 +23,7 @@ export const SearchInput: React.FC = () => {
 	};
 
 	return (
-		<div className='flex flex-1 items-center justify-center'>
+		<div className={cn('flex flex-1 items-center justify-center', className)} {...props}>
 			<form className='relative w-full max-w-[45rem]' onSubmit={handleSubmit}>
 				<Input
 					placeholder='Search'
